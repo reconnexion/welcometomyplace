@@ -14,8 +14,10 @@
 #   0 4 * * * /ABSOLUTE_PATH_TO/cleanup-preview-datasets.sh >> ~/cleanup-preview-datasets.log 2>&1
 #
 # A dataset is kept as long as any container on the host (running or not)
-# still declares it in SEMAPPS_MAIN_DATASET or SEMAPPS_AUTH_ACCOUNTS_DATASET_NAME.
-# Only datasets whose name ends with `-pr-<n>` are candidates.
+# declares it in SEMAPPS_MAIN_DATASET or SEMAPPS_AUTH_ACCOUNTS_DATASET_NAME,
+# in either of two readings taken 90s apart (Coolify replaces the containers
+# of a stack on each deployment). Only datasets whose name ends with `-pr-<n>`
+# are candidates.
 #
 #   DRY_RUN=1  lists what would be removed without stopping anything.
 #   FORCE=1    bypasses the night-time check.
@@ -41,8 +43,13 @@ if [ -z "$volume" ]; then
 fi
 
 # Datasets still declared by a container, whatever its stack and state
-used=$(docker ps -aq | xargs -r docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' \
-  | grep -E '^SEMAPPS_(MAIN_DATASET|AUTH_ACCOUNTS_DATASET_NAME)=' | cut -d= -f2- | sort -u)
+declared_datasets() {
+  docker ps -aq | xargs -r docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' 2>/dev/null \
+    | grep -E '^SEMAPPS_(MAIN_DATASET|AUTH_ACCOUNTS_DATASET_NAME)=' | cut -d= -f2- || true
+}
+# While Coolify redeploys a stack, its containers are gone for a few seconds:
+# a dataset is only considered unused if two readings 90s apart agree.
+used=$({ declared_datasets; [ "$DRY_RUN" = 1 ] || { sleep 90; declared_datasets; }; } | sort -u)
 
 # Datasets known to Fuseki, from their configuration files
 all=$(docker run --rm -v "$volume":/fuseki:ro alpine sh -c 'cd /fuseki/configuration && ls *.ttl' | sed 's/\.ttl$//')
