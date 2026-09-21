@@ -97,6 +97,22 @@ yarn run link-packages
 
 The frontend has no `@semapps/*` or `@activitypods/react` dependencies to link — it only depends on `@activitypods/refine-providers`, published normally to npm. If you need to test unpublished changes to that package, link it directly with `yarn link` from its own repository.
 
+## Dev environment and pull request previews (Coolify)
+
+The dev instance and one preview per pull request are built and run by [Coolify](https://coolify.io) directly from this repository, using [`docker-compose.coolify.yml`](./docker-compose.coolify.yml) and the Dockerfiles in [`/docker`](./docker). No image is built by GitHub Actions for them (the workflow only builds the release images on `v*` tags).
+
+How it is wired in Coolify:
+
+- One **application** (build pack _Docker Compose_, compose file `/docker-compose.coolify.yml`) follows the dev branch: every push rebuilds and redeploys it.
+- **Preview deployments** are enabled on that application: opening or updating a pull request builds a separate stack on its own domain (see the _Preview URL Template_ of the application), and closing or merging the PR removes it. The GitHub App adds a comment with the preview link on each PR. Only pull requests targeting the branch the application follows get a preview, and only when their author is a **direct** collaborator of the repository (Coolify ignores PRs from other authors, including members who only have access through the organization, unless _public_ preview deployments are enabled, which we do not want on a public repository).
+- The stacks share the Fuseki of the `shared-infra` service but each one uses its own datasets, named after the stack (`<DATASET_PREFIX>-backend`, `<DATASET_PREFIX>-backend-pr-<n>`), and its own Redis. Only the backend joins the shared `coolify` network.
+- The frontend URLs are inlined by Vite at build time, so the compose file passes the domain Coolify generated for the stack (`SERVICE_FQDN_*`) as build arguments. The variables to set in Coolify (`APP_NAME`, `SPARQL_ENDPOINT`, `JENA_PASSWORD`, `MAPBOX_ACCESS_TOKEN`...) are listed at the top of the compose file; they must be set for both the production and the preview scopes.
+- The backend registers its own actor (`/api/app`) in its settings dataset on the first boot, with the domain it had at that time. Set the domains of the application in Coolify **before** the first deployment; if they change later, delete the `<prefix>-backend` and `settings-<prefix>-backend` datasets in Fuseki and redeploy, otherwise the backend refuses to start (`Remote resource ... cannot be modified`).
+
+Closing a PR removes its containers but not its Fuseki datasets: a nightly cron on the Coolify server (`cleanup-preview-datasets.sh` in the `shared-infra` repository) removes the `*-pr-<n>` datasets no container declares any more.
+
+The builds run on the Coolify server: the frontend image caps the Node heap (`NODE_OPTIONS` in `docker/frontend.dockerfile`) so that a build cannot starve the other containers, Fuseki in particular.
+
 ## Deploy to production
 
 The `docker-compose-prod.yml` includes everything you need to deploy this app to production:
