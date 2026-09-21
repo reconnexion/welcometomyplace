@@ -105,7 +105,7 @@ How it is wired in Coolify:
 
 - One **application** (build pack _Docker Compose_, compose file `/docker-compose.coolify.yml`) follows the dev branch: every push rebuilds and redeploys it.
 - **Preview deployments** are enabled on that application: opening or updating a pull request builds a separate stack on its own domain (see the _Preview URL Template_ of the application), and closing or merging the PR removes it. The GitHub App adds a comment with the preview link on each PR.
-- The stacks share the Fuseki of the `shared-infra` service (the application has _Connect To Predefined Network_ enabled) but each one uses its own datasets, named after the stack (`<DATASET_PREFIX>-backend`, `<DATASET_PREFIX>-backend-pr-<n>`), and its own Redis.
+- The stacks share the Fuseki of the `shared-infra` service but each one uses its own datasets, named after the stack (`<DATASET_PREFIX>-backend`, `<DATASET_PREFIX>-backend-pr-<n>`), and its own Redis. Only the backend joins the shared `coolify` network.
 - The frontend URLs are inlined by Vite at build time, so the compose file passes the domain Coolify generated for the stack (`SERVICE_FQDN_*`) as build arguments. The variables to set in Coolify (`APP_NAME`, `SPARQL_ENDPOINT`, `JENA_PASSWORD`, `MAPBOX_ACCESS_TOKEN`...) are listed at the top of the compose file; they must be set for both the production and the preview scopes.
 
 The builds run on the Coolify server: the frontend image caps the Node heap (`NODE_OPTIONS` in `docker/frontend.dockerfile`) so that a build cannot starve the other containers, Fuseki in particular.

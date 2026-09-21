@@ -7,15 +7,16 @@
 # file with the variables defined in its UI plus generated ones. The ones used here:
 #   SERVICE_FQDN_BACKEND / SERVICE_FQDN_FRONTEND  host of each service, as set in the
 #                                                 Domains field (the PR host for a preview)
-#   SERVICE_NAME_BACKEND                          "backend", or "backend-pr-<n>" for a preview
+#   SERVICE_NAME_BACKEND / SERVICE_NAME_WTMP_REDIS  service names, suffixed with "-pr-<n>"
+#                                                 in a preview (Coolify renames the services)
 # A value starting with `${` becomes an editable variable in Coolify (with its default);
 # the other `${...}` references are only interpolated by docker compose.
 #
-# Fuseki is the one shared with the other apps (shared-infra, in the "infra" project),
-# reached through the "coolify" network: the application must have
-# "Connect To Predefined Network" enabled. Each stack gets its own datasets, so
-# previews never touch each other's data. Redis runs inside the stack, so each
-# preview also gets its own cache and job queue.
+# Fuseki is the one shared with the other apps (shared-infra, in the "infra" project):
+# the backend joins the "coolify" network to reach it. Each stack gets its own
+# datasets, so previews never touch each other's data. Redis runs inside the stack
+# (on the stack's private network only, under a name that cannot be confused with
+# the shared one), so each preview also gets its own cache and job queue.
 
 services:
   backend:
@@ -24,9 +25,13 @@ services:
       dockerfile: docker/backend.dockerfile
     restart: always
     depends_on:
-      - redis
+      - wtmp-redis
     expose:
       - '3000'
+    # Coolify adds the stack's own network to every service; only the backend
+    # also needs the shared one, where Fuseki lives.
+    networks:
+      - coolify
     environment:
       SEMAPPS_APP_NAME: ${APP_NAME:-Welcome to my place}
       SEMAPPS_APP_DESCRIPTION: ${APP_DESCRIPTION:-Foster living together based on welcome, trust and mutual aid}
@@ -41,8 +46,8 @@ services:
       # One pair of datasets per stack, e.g. bcm-backend / settings-bcm-backend-pr-12
       SEMAPPS_MAIN_DATASET: ${DATASET_PREFIX:-wtmp}-${SERVICE_NAME_BACKEND}
       SEMAPPS_AUTH_ACCOUNTS_DATASET_NAME: settings-${DATASET_PREFIX:-wtmp}-${SERVICE_NAME_BACKEND}
-      SEMAPPS_REDIS_CACHE_URL: redis://redis:6379/0
-      SEMAPPS_QUEUE_SERVICE_URL: redis://redis:6379/1
+      SEMAPPS_REDIS_CACHE_URL: redis://${SERVICE_NAME_WTMP_REDIS}:6379/0
+      SEMAPPS_QUEUE_SERVICE_URL: redis://${SERVICE_NAME_WTMP_REDIS}:6379/1
     volumes:
       - backend-logs:/app/backend/logs
       # Keys generated on first start; losing them invalidates every issued token
@@ -71,7 +76,7 @@ services:
     expose:
       - '4000'
 
-  redis:
+  wtmp-redis:
     image: redis:7-alpine
     restart: always
     command: ['redis-server', '--appendonly', 'yes']
@@ -82,3 +87,7 @@ volumes:
   backend-logs:
   backend-jwt:
   redis-data:
+
+networks:
+  coolify:
+    external: true
