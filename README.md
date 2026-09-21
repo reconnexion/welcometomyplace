@@ -109,7 +109,7 @@ How it is wired in Coolify:
 - The frontend URLs are inlined by Vite at build time, so the compose file passes the domain Coolify generated for the stack (`SERVICE_FQDN_*`) as build arguments. The variables to set in Coolify (`APP_NAME`, `SPARQL_ENDPOINT`, `JENA_PASSWORD`, `MAPBOX_ACCESS_TOKEN`...) are listed at the top of the compose file; they must be set for both the production and the preview scopes.
 - The backend registers its own actor (`/api/app`) in its settings dataset on the first boot, with the domain it had at that time. Set the domains of the application in Coolify **before** the first deployment; if they change later, delete the `<prefix>-backend` and `settings-<prefix>-backend` datasets in Fuseki and redeploy, otherwise the backend refuses to start (`Remote resource ... cannot be modified`).
 
-Closing a PR removes its containers but not its Fuseki datasets. [`docker/cleanup-preview-datasets.sh`](./docker/cleanup-preview-datasets.sh) removes the `*-pr-<n>` datasets no container declares any more; it has to stop Fuseki to delete the files, so it runs from a cron on the Coolify server at night only (see the header of the script).
+Closing a PR removes its containers but not its Fuseki datasets: a nightly cron on the Coolify server (`cleanup-preview-datasets.sh` in the `shared-infra` repository) removes the `*-pr-<n>` datasets no container declares any more.
 
 The builds run on the Coolify server: the frontend image caps the Node heap (`NODE_OPTIONS` in `docker/frontend.dockerfile`) so that a build cannot starve the other containers, Fuseki in particular.
 
