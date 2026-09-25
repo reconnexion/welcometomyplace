@@ -67,8 +67,6 @@ services:
         VITE_APP_LANG: ${APP_LANG:-en}
         VITE_BACKEND_URL: https://${SERVICE_FQDN_BACKEND}/api/
         VITE_BACKEND_CLIENT_ID: https://${SERVICE_FQDN_BACKEND}/api/app
-        VITE_ORGANIZATION_NAME: ${ORGANIZATION_NAME:-}
-        VITE_ORGANIZATION_URL: ${ORGANIZATION_URL:-}
         # Set to restrict the login page to a single Pod provider
         VITE_DEFAULT_POD_PROVIDER: ${POD_PROVIDER_BASE_URL:-}
         VITE_MAPBOX_ACCESS_TOKEN: ${MAPBOX_ACCESS_TOKEN:-}

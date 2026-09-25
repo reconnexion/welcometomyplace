@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useList } from '@refinedev/core';
 import { Alert, Button, Col, Grid, Row, Spin, Tabs } from 'antd';
-import { HomeFilled, PlusOutlined } from '@ant-design/icons';
+import { HomeFilled } from '@ant-design/icons';
 import { Link } from 'react-router';
 
 import PageLayout from '../components/layout/PageLayout';
 import EventListItem from '../components/event/EventListItem';
 import ProfileCard from '../components/event/ProfileCard';
-import { APP_DESCRIPTION, ORGANIZATION_NAME, ORGANIZATION_URL } from '../config/env';
 import type { EventRecord } from '../types';
 
 const EventListPage = () => {
@@ -36,29 +35,29 @@ const EventListPage = () => {
 
   return (
     <PageLayout>
-      <div style={{ backgroundColor: '#fff', paddingTop: 32, paddingBottom: 24 }}>
+      <div style={{ backgroundColor: '#fff', paddingTop: 32, paddingBottom: 32 }}>
         <div
           style={{
-            maxWidth: 1100,
+            maxWidth: 1200,
             margin: '0 auto',
             padding: '0 24px',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             flexWrap: 'wrap',
             gap: 12
           }}
         >
           <h1 className="ap-page-title">{t('event.my_events')}</h1>
           <Link to="/events/create">
-            <Button type="primary" icon={<PlusOutlined />} className="ap-btn-uppercase">
+            <Button type="primary" className="ap-btn-uppercase">
               {screens.sm ? t('event.create') : t('event.create_short')}
             </Button>
           </Link>
         </div>
       </div>
-      <div style={{ backgroundColor: '#eee' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
+      <div style={{ backgroundColor: '#e0e0e0' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           <Tabs
             activeKey={tab}
             onChange={key => setTab(key as 'coming' | 'finished')}
@@ -71,7 +70,7 @@ const EventListPage = () => {
           />
         </div>
       </div>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 24 }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 24 }}>
         <Row gutter={24}>
           <Col xs={24} md={16} lg={17}>
             <Alert
@@ -79,15 +78,13 @@ const EventListPage = () => {
               showIcon
               type="warning"
               className="ap-alert-solid"
-              style={{ marginBottom: 16 }}
+              style={{ marginBottom: 21 }}
               message={
                 <>
-                  {APP_DESCRIPTION}{' '}
-                  {ORGANIZATION_NAME && ORGANIZATION_URL && (
-                    <a href={ORGANIZATION_URL} target="_blank" rel="noopener noreferrer">
-                      {t('event.backed_by', { organizationName: ORGANIZATION_NAME })}
-                    </a>
-                  )}
+                  {t('event.mission')}. {t('event.backed_by')}{' '}
+                  <a href="https://reconnexion.coop" target="_blank" rel="noopener noreferrer">
+                    Reconnexion
+                  </a>
                 </>
               }
             />

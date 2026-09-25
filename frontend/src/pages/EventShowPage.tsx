@@ -84,7 +84,7 @@ const EventShowContent = ({ capability }: { capability?: Capability }) => {
   return (
     <PageLayout>
       <div style={{ backgroundColor: '#fff', paddingTop: 24, paddingBottom: 8 }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           <Row justify="space-between" align="top" gutter={[16, 16]}>
             <Col xs={24} sm={18}>
               {format && (
@@ -113,7 +113,7 @@ const EventShowContent = ({ capability }: { capability?: Capability }) => {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 24px 80px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 24px 80px' }}>
         <Row gutter={24}>
           <Col xs={24} md={16} lg={17}>
             <EventAlert event={event} />

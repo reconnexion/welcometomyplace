@@ -25,15 +25,15 @@ const ProfileCard = () => {
   const frontendUrl = nodeinfo?.metadata?.frontend_url;
 
   return (
-    <Card styles={{ body: { padding: 0 } }} style={{ overflow: 'hidden' }}>
-      <div className="ap-gradient-surface" style={{ height: 85, position: 'relative' }}>
+    <Card className="ap-card" styles={{ body: { padding: 0 } }} style={{ overflow: 'hidden', marginTop: 5 }}>
+      <div className="ap-gradient-surface ap-gradient-flat" style={{ height: 85, position: 'relative' }}>
         <div style={{ position: 'absolute', top: 10, left: 0, right: 0, textAlign: 'center' }}>
           <Avatar size={150} src={profile?.['vcard:photo']} icon={!profile?.['vcard:photo'] && <UserOutlined />} />
         </div>
       </div>
       <div style={{ padding: '80px 24px 20px', textAlign: 'center' }}>
-        <h2 style={{ fontFamily: 'inherit', margin: 0 }}>{profile?.['vcard:given-name']}</h2>
-        <div>{formatUsername(identity.id)}</div>
+        <h2 style={{ margin: 0, fontSize: 40, lineHeight: '58px' }}>{profile?.['vcard:given-name']}</h2>
+        <div style={{ fontSize: 16 }}>{formatUsername(identity.id)}</div>
       </div>
       {frontendUrl && (
         <div style={{ padding: '0 24px 24px' }}>

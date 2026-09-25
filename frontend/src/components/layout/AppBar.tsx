@@ -1,5 +1,6 @@
-import { Layout } from 'antd';
-import { HomeFilled } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
+import { Grid, Layout } from 'antd';
+import { HeartFilled, HomeFilled } from '@ant-design/icons';
 import { Link } from 'react-router';
 import { useGetIdentity } from '@refinedev/core';
 
@@ -10,6 +11,8 @@ import type { Identity } from '../../types';
 
 export const APP_BAR_HEIGHT = 64;
 
+const DONATION_URL = 'https://www.helloasso.com/associations/reconnexion/formulaires/1';
+
 type Props = {
   /** Force the opaque gradient background, instead of transparent-until-scrolled (used on every
    *  page except the home page, which sits on top of the hero image). */
@@ -17,6 +20,8 @@ type Props = {
 };
 
 const AppBar = ({ opaque }: Props) => {
+  const { t } = useTranslation();
+  const screens = Grid.useBreakpoint();
   const { data: identity } = useGetIdentity<Identity>();
   const trigger = useScrollTrigger(window.innerHeight - APP_BAR_HEIGHT);
   const isOpaque = opaque || trigger;
@@ -46,7 +51,14 @@ const AppBar = ({ opaque }: Props) => {
         <HomeFilled style={{ fontSize: 24 }} />
         {APP_NAME}
       </Link>
-      <UserMenu />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+        {screens.md && (
+          <a href={DONATION_URL} target="_blank" rel="noopener noreferrer" className="ap-appbar-link">
+            <HeartFilled /> {t('nav.support')}
+          </a>
+        )}
+        <UserMenu />
+      </div>
     </Layout.Header>
   );
 };

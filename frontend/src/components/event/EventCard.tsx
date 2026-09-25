@@ -1,6 +1,5 @@
 import { useOne } from '@refinedev/core';
 import { CalendarOutlined, StarOutlined, UserOutlined } from '@ant-design/icons';
-import { Tag } from 'antd';
 
 import useActorProfile from '../../hooks/useActorProfile';
 import { formatEventDateTime } from '../../utils/formatEventDate';
@@ -23,25 +22,29 @@ const EventCard = ({ event }: Props) => {
       <h2 className="ap-font-display" style={{ margin: 0, fontSize: 20, fontWeight: 500, lineHeight: 1.8, color: '#FFA500' }}>
         {event.name}
       </h2>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
-        <Tag icon={<CalendarOutlined />} bordered={false}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 8 }}>
+        <span className="ap-event-meta">
+          <CalendarOutlined />
           {formatEventDateTime(event.startTime)}
-        </Tag>
+        </span>
         {organizerProfile?.['vcard:given-name'] && (
-          <Tag icon={<UserOutlined />} bordered={false}>
+          <span className="ap-event-meta">
+          <UserOutlined />
             {organizerProfile['vcard:given-name']}
-          </Tag>
+          </span>
         )}
         {format?.['rdfs:label'] && (
-          <Tag icon={<StarOutlined />} bordered={false}>
+          <span className="ap-event-meta">
+          <StarOutlined />
             {format['rdfs:label']}
-          </Tag>
+          </span>
         )}
       </div>
       <p
         style={{
-          margin: 0,
+          margin: '10px 0 0',
           fontSize: 14,
+          lineHeight: '16px',
           display: '-webkit-box',
           WebkitLineClamp: 3,
           WebkitBoxOrient: 'vertical',

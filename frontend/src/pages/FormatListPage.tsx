@@ -16,7 +16,7 @@ const FormatListPage = () => {
 
   return (
     <PageLayout>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 24 }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 24 }}>
         <h1 className="ap-font-display">{t('format.all_formats')}</h1>
         {query.isLoading ? (
           <Spin />

@@ -26,7 +26,12 @@
     "upload": "Upload",
     "add": "Add"
   },
+  "buttons": {
+    "refresh": "Refresh",
+    "logout": "Logout"
+  },
   "nav": {
+    "support": "Support us",
     "my_events": "My events",
     "home": "Home",
     "my_profile": "My profile",
@@ -128,8 +133,8 @@
     "event_creating": "The event is being created",
     "title": "Title",
     "image": "Image",
-    "first_event_help": "If you have questions or troubles regarding the creation of events, feel free to contact us on",
-    "forum_name": "Forum Reconnexion",
+    "first_event_help": "If you have any questions or difficulties creating events, feel free to contact us on the",
+    "forum_name": "Reconnexion forum",
     "unknown_user": "Unknown",
     "tab_coming": "Coming events",
     "tab_finished": "Finished events",
@@ -159,7 +164,8 @@
     "clone_new_date": "New start date and time",
     "clone_success": "Event cloned successfully",
     "clone_error": "Error cloning event",
-    "backed_by": "Backed by {{organizationName}}"
+    "mission": "Foster living together based on welcome, trust and mutual aid",
+    "backed_by": "Backed by"
   },
   "share": {
     "view": "Allowed to join",

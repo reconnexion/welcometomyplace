@@ -26,7 +26,12 @@
     "upload": "Choisir une image",
     "add": "Ajouter"
   },
+  "buttons": {
+    "refresh": "Actualiser",
+    "logout": "Se déconnecter"
+  },
   "nav": {
+    "support": "Nous soutenir",
     "my_events": "Mes rencontres",
     "home": "Accueil",
     "my_profile": "Mon profil",
@@ -160,7 +165,8 @@
     "clone_new_date": "Nouvelle date et heure de début",
     "clone_success": "Rencontre dupliquée avec succès",
     "clone_error": "Erreur lors de la duplication de la rencontre",
-    "backed_by": "Proposé par {{organizationName}}"
+    "mission": "Favoriser un vivre ensemble basé sur l'accueil, la confiance et l'entraide",
+    "backed_by": "Proposé par"
   },
   "share": {
     "view": "Droit de s'inscrire",

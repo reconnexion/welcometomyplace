@@ -87,8 +87,6 @@ jobs:
             VITE_APP_LANG=${{ vars.APP_LANG || 'en' }}
             VITE_BACKEND_URL=https://${{ steps.env.outputs.domain }}/api/
             VITE_BACKEND_CLIENT_ID=https://${{ steps.env.outputs.domain }}/api/app
-            VITE_ORGANIZATION_NAME=${{ vars.ORGANIZATION_NAME }}
-            VITE_ORGANIZATION_URL=${{ vars.ORGANIZATION_URL }}
             # Set the POD_PROVIDER_BASE_URL repository variable to restrict the login page to
             # a single Pod provider. Unset, it lists the public providers and lets the user pick.
             VITE_DEFAULT_POD_PROVIDER=${{ vars.POD_PROVIDER_BASE_URL }}

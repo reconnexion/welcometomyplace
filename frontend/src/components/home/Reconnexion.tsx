@@ -1,14 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Typography } from 'antd';
 
-import { ORGANIZATION_URL } from '../../config/env';
+const RECONNEXION_URL = 'https://reconnexion.coop';
 
-/** "Powered by" footer block. Content is org-specific (Reconnexion coop) and driven by
- *  `VITE_ORGANIZATION_NAME`/`VITE_ORGANIZATION_URL`; hidden entirely when unset. */
+/** "Powered by" footer block, crediting the Reconnexion coop. */
 const Reconnexion = () => {
   const { t } = useTranslation();
-
-  if (!ORGANIZATION_URL) return null;
 
   return (
     <div style={{ padding: '64px 16px', backgroundColor: '#fff' }}>
@@ -16,7 +13,7 @@ const Reconnexion = () => {
         <Typography.Paragraph style={{ fontSize: 'clamp(18px, 2vw, 20px)', color: '#000', marginBottom: 16 }}>
           {t('home.app_supported_by')}
         </Typography.Paragraph>
-        <a href={ORGANIZATION_URL} target="_blank" rel="noreferrer">
+        <a href={RECONNEXION_URL} target="_blank" rel="noreferrer">
           <img src="/images/reconnexion.png" alt="Reconnexion logo" style={{ maxWidth: 500, width: '100%' }} />
         </a>
         <Typography.Paragraph
@@ -25,8 +22,8 @@ const Reconnexion = () => {
           {t('home.reconnexion_tagline')}
         </Typography.Paragraph>
         <Typography.Paragraph style={{ fontSize: 'clamp(18px, 2vw, 20px)', marginTop: 16 }}>
-          <a href={ORGANIZATION_URL} target="_blank" rel="noreferrer">
-            {ORGANIZATION_URL.replace(/^https?:\/\//, '')}
+          <a href={RECONNEXION_URL} target="_blank" rel="noreferrer">
+            reconnexion.coop
           </a>
         </Typography.Paragraph>
       </div>

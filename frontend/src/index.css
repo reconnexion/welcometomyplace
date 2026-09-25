@@ -52,6 +52,27 @@ h4,
   max-width: 650px;
 }
 
+/* Small outlined button in the app bar (donation), next to the user menu. */
+.ap-appbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #fff !important;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.ap-appbar-link:hover {
+  background-color: #fff;
+  color: #ffa500 !important;
+}
+
 .ap-appbar-title {
   display: flex;
   align-items: center;
@@ -68,14 +89,14 @@ h4,
 
 .ap-page-title {
   margin: 0;
+  line-height: 1;
   font-size: clamp(32px, 5vw, 48px);
   color: #000;
 }
 
 .ap-btn-uppercase.ant-btn {
   text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 /* Minimalist "PARTAGER"/"MODIFIER" style action links on the event show header — text-only,
@@ -98,19 +119,20 @@ h4,
 }
 
 .ap-tabs-uppercase.ant-tabs .ant-tabs-tab {
-  padding: 16px 4px;
+  padding: 13px 16px;
 }
 
 .ap-tabs-uppercase.ant-tabs .ant-tabs-tab + .ant-tabs-tab {
-  margin-left: 32px;
+  margin-left: 0;
 }
 
 .ap-tabs-uppercase.ant-tabs .ant-tabs-tab-btn {
   text-transform: uppercase;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
   letter-spacing: 0.03em;
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .ap-tabs-uppercase.ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -151,6 +173,18 @@ h4,
 .ap-alert-solid.ant-alert {
   background-color: #ffa500;
   border: none;
+  padding: 14px 16px;
+}
+
+.ap-alert-solid .ant-alert-message {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.ap-alert-solid.ant-alert .ant-alert-icon {
+  font-size: 22px;
+  margin-top: -1px;
+  margin-inline-end: 14px;
 }
 
 .ap-alert-solid .ant-alert-message,
@@ -169,6 +203,7 @@ h4,
   color: #fff;
   text-decoration: underline;
 }
+
 
 /* Rendered Markdown content (event descriptions, format recipes). */
 .ap-markdown p {
@@ -207,4 +242,29 @@ h4,
   color: #fff;
   background-image: radial-gradient(circle at 50% 4em, #ffc300 0%, #ffa500 100%);
   padding: 2px 32px 2px 16px;
+}
+
+/* MUI-like cards (old app): no border, light elevation shadow. */
+.ap-card.ant-card {
+  border: none;
+  box-shadow:
+    0 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* The old app's flatter orange gradient (event date block, profile card header). */
+.ap-gradient-surface.ap-gradient-flat {
+  background-image: radial-gradient(circle at 50% 14em, #ffc300 0%, #ffa500 100%);
+}
+
+/* Event meta line (date, organizer, format): borderless MUI chips, small bold text. */
+.ap-event-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
 }

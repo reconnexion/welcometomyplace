@@ -31,9 +31,12 @@ export const i18nProvider: I18nProvider = {
   // create/update/delete success/error notifications) — keys we haven't added to en/fr.json
   // ourselves. Without forwarding that third argument as i18next's `defaultValue`, a missing key
   // renders as the raw key itself (e.g. "notifications.createSuccess") instead of falling back to
-  // Refine's sensible built-in English default.
+  // Refine's sensible built-in English default. Refine also forwards the two-argument form
+  // `translate(key, defaultMessage)` as-is, with the default message in the `options` slot.
   translate: (key: string, options?: any, defaultMessage?: string) =>
-    i18next.t(key, { ...options, defaultValue: defaultMessage }) as string,
+    typeof options === 'string'
+      ? (i18next.t(key, { defaultValue: options }) as string)
+      : (i18next.t(key, { ...options, defaultValue: defaultMessage }) as string),
   changeLocale: (lang: string) => i18next.changeLanguage(lang),
   getLocale: () => i18next.language
 };

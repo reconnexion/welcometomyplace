@@ -14,13 +14,14 @@ const EventListItem = ({ event }: Props) => {
   const image = Array.isArray(event.image) ? event.image[0] : event.image;
   const startDate = new Date(event.startTime);
 
-  const imageBlockStyle = isMobile ? { width: '100%', height: 160 } : { width: 180, minWidth: 180 };
+  const imageBlockStyle = isMobile ? { width: '100%', minHeight: 145 } : { width: 180, minWidth: 180, minHeight: 145 };
 
   return (
     <Link to={`/events/${encodeURIComponent(event.id)}`} style={{ color: 'inherit' }}>
       <Card
         styles={{ body: { display: 'flex', flexDirection: isMobile ? 'column' : 'row', padding: 0 } }}
-        style={{ marginBottom: 16, overflow: 'hidden' }}
+        className="ap-card"
+        style={{ marginBottom: 20, overflow: 'hidden' }}
         hoverable
       >
         {image ? (
@@ -34,7 +35,7 @@ const EventListItem = ({ event }: Props) => {
           />
         ) : (
           <div
-            className="ap-gradient-surface"
+            className="ap-gradient-surface ap-gradient-flat"
             style={{
               ...imageBlockStyle,
               display: 'flex',
@@ -44,14 +45,14 @@ const EventListItem = ({ event }: Props) => {
               textAlign: 'center'
             }}
           >
-            <div style={{ textTransform: 'capitalize' }}>
-              {startDate.toLocaleDateString(undefined, { weekday: 'long' })}
+            <div style={{ fontSize: 12 }}>{startDate.toLocaleDateString(undefined, { weekday: 'long' })}</div>
+            <div className="ap-font-display" style={{ fontSize: 50, lineHeight: 1.3, fontWeight: 700 }}>
+              {startDate.getDate()}
             </div>
-            <div style={{ fontSize: 50, lineHeight: 1.2 }}>{startDate.getDate()}</div>
-            <div style={{ textTransform: 'capitalize' }}>{startDate.toLocaleDateString(undefined, { month: 'long' })}</div>
+            <div style={{ fontSize: 12 }}>{startDate.toLocaleDateString(undefined, { month: 'long' })}</div>
           </div>
         )}
-        <div style={{ padding: 16, flex: 1, minWidth: 0 }}>
+        <div style={{ padding: '10px 16px 16px', flex: 1, minWidth: 0 }}>
           <EventCard event={event} />
         </div>
       </Card>
