@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useOne, useParsed } from '@refinedev/core';
-import { Navigate, useLocation } from 'react-router';
-import { Col, Grid, Row, Space, Spin } from 'antd';
+import { useEffect } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router';
+import { App, Col, Grid, Row, Space, Spin } from 'antd';
 
 import PageLayout from '../components/layout/PageLayout';
 import { APP_BAR_HEIGHT } from '../components/layout/AppBar';
@@ -35,33 +36,73 @@ const Loading = () => (
   </PageLayout>
 );
 
+/** Sends the visitor back to the homepage with a notice — used when the event can't be shown to
+ *  them, either because its public link was revoked or because they were never invited. */
+const useLeaveEvent = () => {
+  const { t } = useTranslation();
+  const { message } = App.useApp();
+  const navigate = useNavigate();
+  return (messageKey: string) => {
+    message.warning(t(messageKey));
+    navigate('/', { replace: true });
+  };
+};
+
+/** The Pod answers 404 as well as 401/403 to someone without read rights, so none of these can be
+ *  told apart from "not invited" — and none of them will change on retry. */
+const isAccessDenied = (error: any) => [401, 403, 404].includes(error?.status ?? error?.statusCode);
+
 /**
  * This route is public so that public event links work for people without an account. The page
  * below is the same one members see; the only gate is here — a visitor with neither a session nor
  * a credential to read the event with is sent to log in, and one arriving with `?cap=` waits for
  * that credential to be loaded before any Pod read is attempted.
+ *
+ * If that credential can't be loaded (the link was revoked), a logged-out visitor is sent back to
+ * the homepage straight away; a logged-in one may still have been invited, so the event is read
+ * with their session and they're only sent back if that fails too. A logged-in visitor who simply
+ * can't read the event (never invited) is sent back to the homepage as well.
  */
 const EventShowPage = () => {
-  const { capability, capabilityUri, ready } = useCapability();
+  const { capability, capabilityUri, ready, error } = useCapability();
   const location = useLocation();
   const session = authProvider.getSession();
+  const leaveEvent = useLeaveEvent();
+  const linkInvalid = !!capabilityUri && !!error;
+
+  useEffect(() => {
+    if (linkInvalid && !session) leaveEvent('share.link_invalid');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linkInvalid]);
 
   if (!session && !capabilityUri) {
     return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
 
-  if (!ready) return <Loading />;
+  if (!ready || (linkInvalid && !session)) return <Loading />;
 
-  return <EventShowContent capability={capability} />;
+  return <EventShowContent capability={capability} linkInvalid={linkInvalid} />;
 };
 
-const EventShowContent = ({ capability }: { capability?: Capability }) => {
+const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability; linkInvalid: boolean }) => {
   const { t } = useTranslation();
   const { id } = useParsed();
   const screens = useBreakpoint();
   const isMobile = !screens.sm;
+  const leaveEvent = useLeaveEvent();
 
-  const { result: event, query } = useOne<EventRecord>({ resource: 'event', id });
+  const { result: event, query } = useOne<EventRecord>({
+    resource: 'event',
+    id,
+    queryOptions: { retry: (failureCount, error) => !isAccessDenied(error) && failureCount < 3 }
+  });
+
+  useEffect(() => {
+    if (query.isError && (linkInvalid || isAccessDenied(query.error))) {
+      leaveEvent(linkInvalid ? 'share.link_invalid' : 'event.not_invited');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linkInvalid, query.isError]);
   const { result: format } = useOne<FormatRecord>({
     resource: 'format',
     id: event?.['apods:hasFormat'],

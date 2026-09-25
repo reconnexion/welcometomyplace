@@ -165,7 +165,8 @@
     "clone_success": "Event cloned successfully",
     "clone_error": "Error cloning event",
     "mission": "Foster living together based on welcome, trust and mutual aid",
-    "backed_by": "Backed by"
+    "backed_by": "Backed by",
+    "not_invited": "You have not been invited to this event"
   },
   "share": {
     "view": "Allowed to join",
@@ -182,7 +183,8 @@
     "access_anyone_with_link_help": "Anyone with the link can see this event and ask to join it.",
     "copy_link": "Copy link",
     "link_copied": "Link copied",
-    "link_copy_error": "The link could not be copied"
+    "link_copy_error": "The link could not be copied",
+    "link_invalid": "This share link is no longer valid"
   },
   "apods": {
     "error": {

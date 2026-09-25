@@ -166,7 +166,8 @@
     "clone_success": "Rencontre dupliquée avec succès",
     "clone_error": "Erreur lors de la duplication de la rencontre",
     "mission": "Favoriser un vivre ensemble basé sur l'accueil, la confiance et l'entraide",
-    "backed_by": "Proposé par"
+    "backed_by": "Proposé par",
+    "not_invited": "Vous n'avez pas été invité à cette rencontre"
   },
   "share": {
     "view": "Droit de s'inscrire",
@@ -183,7 +184,8 @@
     "access_anyone_with_link_help": "Toute personne disposant du lien peut voir cette rencontre et demander à s'y inscrire.",
     "copy_link": "Copier le lien",
     "link_copied": "Lien copié",
-    "link_copy_error": "Le lien n'a pas pu être copié"
+    "link_copy_error": "Le lien n'a pas pu être copié",
+    "link_invalid": "Ce lien de partage n'est plus valide"
   },
   "apods": {
     "error": {
