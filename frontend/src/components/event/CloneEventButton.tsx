@@ -17,6 +17,9 @@ const CloneEventButton = ({ event }: Props) => {
   const { message } = App.useApp();
   const { data: identity } = useGetIdentity<Identity>();
 
+  const creatorUri = event['dc:creator'];
+  if (!creatorUri || creatorUri !== identity?.id) return null;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStartDate, setNewStartDate] = useState<Dayjs | null>(null);
 
