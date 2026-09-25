@@ -66,46 +66,32 @@ const ShareDialog = ({ event, open, onClose }: Props) => {
   const sendInvitations = async () => {
     setSending(true);
     try {
-      // Matches @activitypods/react's ShareDialog exactly (the pod-provider backend's
-      // `announcer` service only understands these two shapes, not an `interop:delegationAllowed`
-      // flag on a plain Announce — a plain Announce from a non-creator is rejected outright):
-      // - View-only invites: the creator posts `Announce` directly; a delegate instead posts
-      //   `Offer{Announce}` addressed to the creator, whose Pod does the actual Announce itself
-      //   (see `announcer.ts`'s `offerAnnounce.onReceive`) since only the creator may grant access.
-      // - Share (delegation) rights: always `Offer{Announce}` addressed directly to the new
-      //   delegates — only the creator can send this (gated by the "share" toggle being
-      //   creator-only in ContactItem/GroupContactsItem).
+      // Same shapes as @activitypods/react's ShareDialog for ActivityPods 2.3 (see the pod-provider's
+      // `announcer` service). Everyone, creator or delegate, posts a plain `Announce`: the backend
+      // accepts it from a non-creator only if they're in `apods:announcers`. Share rights are
+      // granted by the creator with `interop:delegationAllowed`, which also grants view rights.
+      const actorsWithNewShareRight = Object.keys(newInvitations).filter(uri => newInvitations[uri].canShare);
       const actorsWithNewViewRight = Object.keys(newInvitations).filter(
-        uri => newInvitations[uri].canView && !savedInvitations[uri]?.canView
+        uri => newInvitations[uri].canView && !newInvitations[uri].canShare
       );
+
       if (actorsWithNewViewRight.length > 0) {
-        if (isCreator) {
-          await outbox.post({
-            type: 'Announce',
-            actor: outbox.owner,
-            object: event.id,
-            target: actorsWithNewViewRight,
-            to: actorsWithNewViewRight
-          });
-        } else {
-          await outbox.post({
-            type: 'Offer',
-            actor: outbox.owner,
-            object: { type: 'Announce', actor: outbox.owner, object: event.id, target: actorsWithNewViewRight },
-            target: creatorUri,
-            to: creatorUri
-          });
-        }
+        await outbox.post({
+          type: 'Announce',
+          actor: outbox.owner,
+          object: event.id,
+          to: actorsWithNewViewRight
+        });
       }
 
-      const actorsWithNewShareRight = Object.keys(newInvitations).filter(uri => newInvitations[uri].canShare);
       if (actorsWithNewShareRight.length > 0) {
         await outbox.post({
-          type: 'Offer',
+          type: 'Announce',
           actor: outbox.owner,
-          object: { type: 'Announce', object: event.id },
-          target: actorsWithNewShareRight,
-          to: actorsWithNewShareRight
+          object: event.id,
+          to: actorsWithNewShareRight,
+          'interop:delegationAllowed': true,
+          'interop:delegationLimit': 1
         });
       }
 
