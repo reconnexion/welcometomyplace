@@ -1,83 +1,46 @@
 {
   "name": "welcometomyplace-frontend",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "tsc -b && vite build",
+    "serve": "vite preview",
+    "type-check": "tsc --noEmit"
+  },
   "dependencies": {
-    "@activitypods/react": "2.2.0",
-    "@mui/styles": "^5.0.2",
-    "@rdfjs/data-model": "^1.3.4",
-    "@react-hook/debounce": "^4.0.0",
-    "@semapps/activitypub-components": "1.1.4",
-    "@semapps/auth-provider": "1.1.4",
-    "@semapps/date-components": "1.1.4",
-    "@semapps/field-components": "1.1.4",
-    "@semapps/geo-components": "1.1.4",
-    "@semapps/input-components": "1.1.4",
-    "@semapps/list-components": "1.1.4",
-    "@semapps/markdown-components": "1.1.4",
-    "@semapps/semantic-data-provider": "1.1.4",
-    "@tiptap/core": "^2.0.0-beta.95",
-    "@tiptap/extension-mention": "^2.0.0-beta.95",
-    "@tiptap/extension-placeholder": "^2.0.0-beta.95",
-    "@tiptap/react": "^2.0.0-beta.95",
-    "@tiptap/suggestion": "^2.0.0-beta.95",
-    "date-fns": "~2.8.1",
-    "final-form-calculate": "^1.3.2",
-    "jwt-decode": "^3.1.2",
-    "leaflet": "^1.8.0",
-    "leaflet-defaulticon-compatibility": "^0.1.1",
-    "leaflet.markercluster": "^1.5.3",
-    "prosemirror-commands": "^1.5.0",
-    "prosemirror-dropcursor": "^1.6.1",
-    "prosemirror-gapcursor": "^1.3.1",
-    "prosemirror-history": "^1.3.0",
-    "prosemirror-keymap": "^1.2.0",
-    "prosemirror-model": "^1.18.3",
-    "prosemirror-schema-list": "^1.2.2",
-    "prosemirror-state": "^1.4.2",
-    "prosemirror-transform": "^1.7.0",
-    "prosemirror-view": "^1.29.1",
-    "ra-language-english": "^4.11.0",
-    "ra-language-french": "^4.11.0",
+    "@activitypods/refine-providers": "^0.1.5",
+    "@ant-design/icons": "^5.5.1",
+    "@refinedev/antd": "^6.0.3",
+    "@refinedev/core": "^5.0.12",
+    "@refinedev/react-router": "^2.0.4",
+    "@tanstack/react-query": "^5.81.5",
+    "antd": "^5.23.0",
+    "dayjs": "^1.11.13",
+    "i18next": "^23.16.8",
+    "leaflet": "^1.9.4",
+    "leaflet-defaulticon-compatibility": "^0.1.2",
+    "markdown-to-jsx": "^7.7.2",
     "react": "^18.2.0",
-    "react-admin": "^4.11.0",
-    "react-copy-to-clipboard": "^5.0.4",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
-    "react-scrollchor": "^7.0.1",
-    "react-sticky-box": "^0.9.3",
-    "speakingurl": "^14.0.1",
-    "url-join": "^4.0.1"
+    "react-i18next": "^15.4.0",
+    "react-leaflet": "^4.2.1",
+    "react-router": "^7.0.2"
   },
   "devDependencies": {
-    "prettier": "^2.3.2",
-    "react-scripts": "^5.0.1",
-    "source-map-explorer": "^2.5.2",
-    "yalc": "1.0.0-pre.53"
+    "@types/leaflet": "^1.9.14",
+    "@types/node": "^20",
+    "@types/react": "^18.2.0",
+    "@types/react-copy-to-clipboard": "^5.0.7",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.15"
   },
-  "scripts": {
-    "dev": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "export GENERATE_SOURCEMAP=false NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
-    "eject": "react-scripts eject",
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "prettier": "prettier --write '**/*.js'",
-    "link-packages": "yalc link @activitypods/react @semapps/activitypub-components @semapps/auth-provider @semapps/date-components @semapps/field-components @semapps/geo-components @semapps/input-components @semapps/list-components @semapps/markdown-components @semapps/semantic-data-provider",
-    "unlink-packages": "yalc remove --all && rm -rf node_modules/@semapps && yarn install --force"
+  "engines": {
+    "node": ">=20"
   },
-  "eslintConfig": {
-    "extends": "react-app",
-    "overrides": [
-      {
-        "files": [
-          "**/*.js"
-        ],
-        "rules": {
-          "jsx-a11y/anchor-is-valid": "off"
-        }
-      }
-    ]
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
-  ]
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

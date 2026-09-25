@@ -14,15 +14,15 @@ node_modules
 # misc
 .DS_Store
 /frontend/.env.local
+/frontend/dist
+/frontend/*.tsbuildinfo
+/frontend/vite.config.js
+/frontend/vite.config.d.ts
 /middleware/.env.local
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-/frontend/.yalc
-/frontend/build
-yalc.lock
 
 .idea
 

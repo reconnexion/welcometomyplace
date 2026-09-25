@@ -1,23 +1,272 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
   background-color: #eaeaea;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-a, a:hover, a:active {
-  color: #D2123F;
+a {
+  color: #ffa500;
   text-decoration: none;
 }
 
-.MuiScopedCssBaseline-root {
-  background-color: unset;
+h1,
+h2,
+h3,
+h4,
+.ap-font-display {
+  font-family: 'Chewy', serif;
+  font-weight: 400;
+}
+
+/* The recurring orange "sunburst" gradient used across cards/headers in the current design
+   (event cards, join card, app bar, section labels). Kept as a single reusable class instead of
+   redefining it per-component. */
+.ap-gradient-surface {
+  background-image: radial-gradient(circle at 50% 3em, #ffc300 0%, #ffa500 100%);
+  color: #fff;
+}
+
+/* Bespoke marketing sections (home page) use plain tags + these classes instead of Antd's
+   Typography/Button, so their colors/sizing are never at the mercy of Antd's own component
+   styles (which take precedence over inline `style` on some versions/components). */
+.ap-hero-title,
+.ap-hero-subtitle {
+  color: #fff !important;
+  text-align: center;
+  margin: 0;
+}
+
+.ap-hero-title {
+  /* The hero headline uses the regular body font (bold), not the Chewy display font used
+     elsewhere — overrides the global `h1{font-family:Chewy}` rule below. */
+  font-family: inherit;
+  font-size: clamp(30px, 5vw, 50px);
+  font-weight: 700;
+  line-height: 1.15;
+  max-width: 650px;
+  margin-bottom: 16px;
+}
+
+.ap-hero-subtitle {
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1.2;
+  max-width: 650px;
+}
+
+/* Small outlined button in the app bar (donation), next to the user menu. */
+.ap-appbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #fff !important;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.ap-appbar-link:hover {
+  background-color: #fff;
+  color: #ffa500 !important;
+}
+
+.ap-appbar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 28px;
+  color: #fff !important;
+}
+
+.ap-heading-accent {
+  color: #ffa500 !important;
+  text-align: center;
+  font-size: clamp(36px, 5vw, 50px);
+}
+
+.ap-page-title {
+  margin: 0;
+  line-height: 1;
+  font-size: clamp(32px, 5vw, 48px);
+  color: #000;
+}
+
+/* Buttons are uppercase throughout, like the former MUI frontend — except the homepage's pill
+   buttons (display font) and link-style buttons, which sit inline with regular text. */
+.ant-btn:not(.ap-btn-pill):not(.ant-btn-link) {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Minimalist "PARTAGER"/"MODIFIER" style action links on the event show header — text-only,
+   uppercase, orange, no button chrome. */
+.ap-btn-text-action.ant-btn {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #ffa500;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.ap-btn-text-action.ant-btn:hover {
+  color: #ff8c00;
+}
+
+.ap-tabs-uppercase.ant-tabs .ant-tabs-nav {
+  margin-bottom: 0;
+}
+
+.ap-tabs-uppercase.ant-tabs .ant-tabs-tab {
+  padding: 13px 16px;
+}
+
+.ap-tabs-uppercase.ant-tabs .ant-tabs-tab + .ant-tabs-tab {
+  margin-left: 0;
+}
+
+.ap-tabs-uppercase.ant-tabs .ant-tabs-tab-btn {
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.ap-tabs-uppercase.ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #ffa500 !important;
+}
+
+.ap-btn-pill.ant-btn {
+  border-radius: 999px;
+  font-family: 'Chewy', serif;
+  font-weight: 400;
+  font-size: 18px;
+  height: auto;
+  line-height: 1.3;
+  padding: 10px 32px;
+}
+
+.ap-btn-pill-white.ant-btn {
+  background: #fff;
+  border-color: #fff;
+  color: #ffa500 !important;
+}
+
+.ap-btn-pill-white.ant-btn:hover,
+.ap-btn-pill-white.ant-btn:focus {
+  background: #fff6e6;
+  border-color: #fff6e6;
+  color: #ff8c00 !important;
+}
+
+.ap-hero {
+  /* `dvh` accounts for mobile browser chrome (address bar) so the hero doesn't jump/clip on
+     scroll; falls back to `vh` on browsers that don't support it. */
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Solid orange mission banner on the events list, matching the old app's filled Alert. */
+.ap-alert-solid.ant-alert {
+  background-color: #ffa500;
+  border: none;
+  padding: 14px 16px;
+}
+
+.ap-alert-solid .ant-alert-message {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.ap-alert-solid.ant-alert .ant-alert-icon {
+  font-size: 22px;
+  margin-top: -1px;
+  margin-inline-end: 14px;
+}
+
+.ap-alert-solid .ant-alert-message,
+.ap-alert-solid .ant-alert-icon {
+  color: #fff;
+}
+
+/* Antd centers the icon against the whole (possibly wrapped, multi-line) message by default,
+   which reads as too low against a long message's first line — align it to the top instead. */
+.ant-alert-icon {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.ap-alert-solid .ant-alert-message a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+
+/* Rendered Markdown content (event descriptions, format recipes). */
+.ap-markdown p {
+  white-space: pre-wrap;
+  margin: 0 0 10px;
+}
+
+.ap-markdown h1 {
+  font-family: inherit;
+  margin: 20px 0 5px;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.ap-markdown h2 {
+  font-family: inherit;
+  margin: 20px 0 5px;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+/* Section heading "pill" used throughout show pages (BodyLabel in the old app): an orange
+   gradient badge behind the label text. */
+.ap-body-label {
+  font-size: 28px;
+  line-height: 1.3;
+  margin: 40px 0 16px;
+}
+
+.ap-body-label:first-child {
+  margin-top: 0;
+}
+
+.ap-body-label span {
+  display: inline-block;
+  color: #fff;
+  background-image: radial-gradient(circle at 50% 4em, #ffc300 0%, #ffa500 100%);
+  padding: 2px 32px 2px 16px;
+}
+
+/* MUI-like cards (old app): no border, light elevation shadow. */
+.ap-card.ant-card {
+  border: none;
+  box-shadow:
+    0 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* The old app's flatter orange gradient (event date block, profile card header). */
+.ap-gradient-surface.ap-gradient-flat {
+  background-image: radial-gradient(circle at 50% 14em, #ffc300 0%, #ffa500 100%);
+}
+
+/* Event meta line (date, organizer, format): borderless MUI chips, small bold text. */
+.ap-event-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
 }
