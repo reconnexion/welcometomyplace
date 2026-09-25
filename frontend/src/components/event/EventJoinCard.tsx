@@ -4,6 +4,7 @@ import { Card } from 'antd';
 import { arrayOf } from '@activitypods/refine-providers/utils';
 
 import JoinButton from './JoinButton';
+import InterestedButton from './InterestedButton';
 import type { EventRecord } from '../../types';
 
 type Props = {
@@ -33,6 +34,7 @@ const EventJoinCard = ({ event, children }: Props) => {
       <div style={{ padding: 24 }}>{children}</div>
       <div style={{ padding: '0 24px 24px', textAlign: 'center' }}>
         <JoinButton event={event} type="primary" block />
+        <InterestedButton event={event} style={{ marginTop: 8 }} block />
         {statusMessage && (
           <div style={{ marginTop: 8, fontSize: 12, color: '#FFA500' }}>{statusMessage}</div>
         )}

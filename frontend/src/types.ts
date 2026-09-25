@@ -22,6 +22,7 @@ export type EventRecord = {
   'apods:maxAttendees'?: number;
   'apods:closingTime'?: string;
   'apods:otherConditions'?: string;
+  likes?: string;
   [key: string]: any;
 };
 

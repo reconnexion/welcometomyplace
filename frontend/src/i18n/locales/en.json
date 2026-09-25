@@ -159,6 +159,12 @@
     "clone_new_date": "New start date and time",
     "clone_success": "Event cloned successfully",
     "clone_error": "Error cloning event",
+    "interested": "Interested",
+    "not_interested": "No longer interested",
+    "interested_count_one": "1 interested",
+    "interested_count_other": "{{count}} interested",
+    "interested_success": "You are now interested in this event",
+    "not_interested_success": "You are no longer interested in this event",
     "backed_by": "Backed by {{organizationName}}"
   },
   "share": {

@@ -160,6 +160,12 @@
     "clone_new_date": "Nouvelle date et heure de début",
     "clone_success": "Rencontre dupliquée avec succès",
     "clone_error": "Erreur lors de la duplication de la rencontre",
+    "interested": "Intéressé(e)",
+    "not_interested": "Plus intéressé(e)",
+    "interested_count_one": "1 intéressé(e)",
+    "interested_count_other": "{{count}} intéressé(e)s",
+    "interested_success": "Vous êtes maintenant intéressé(e) par cette rencontre",
+    "not_interested_success": "Vous n'êtes plus intéressé(e) par cette rencontre",
     "backed_by": "Proposé par {{organizationName}}"
   },
   "share": {
