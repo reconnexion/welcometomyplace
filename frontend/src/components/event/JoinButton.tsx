@@ -129,7 +129,7 @@ const JoinButton = ({ event, ...buttonProps }: Props) => {
 
   if (!session) {
     return (
-      <Button className="ap-btn-uppercase" onClick={signupThenJoin} disabled={isClosed || isFinished} {...buttonProps}>
+      <Button onClick={signupThenJoin} disabled={isClosed || isFinished} {...buttonProps}>
         {t('event.join')}
       </Button>
     );
@@ -137,7 +137,6 @@ const JoinButton = ({ event, ...buttonProps }: Props) => {
 
   return joined ? (
     <Button
-      className="ap-btn-uppercase"
       onClick={() => post('Leave')}
       disabled={pending || isOrganizer || isFinished}
       {...buttonProps}
@@ -146,7 +145,6 @@ const JoinButton = ({ event, ...buttonProps }: Props) => {
     </Button>
   ) : (
     <Button
-      className="ap-btn-uppercase"
       onClick={() => post('Join')}
       disabled={pending || isOrganizer || isClosed || isFinished}
       {...buttonProps}

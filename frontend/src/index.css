@@ -94,7 +94,9 @@ h4,
   color: #000;
 }
 
-.ap-btn-uppercase.ant-btn {
+/* Buttons are uppercase throughout, like the former MUI frontend — except the homepage's pill
+   buttons (display font) and link-style buttons, which sit inline with regular text. */
+.ant-btn:not(.ap-btn-pill):not(.ant-btn-link) {
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }

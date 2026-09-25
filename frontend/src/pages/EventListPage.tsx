@@ -50,7 +50,7 @@ const EventListPage = () => {
         >
           <h1 className="ap-page-title">{t('event.my_events')}</h1>
           <Link to="/events/create">
-            <Button type="primary" className="ap-btn-uppercase">
+            <Button type="primary">
               {screens.sm ? t('event.create') : t('event.create_short')}
             </Button>
           </Link>

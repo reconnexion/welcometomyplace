@@ -148,7 +148,7 @@ const EventForm = ({ form }: Props) => {
         </Col>
       </Row>
 
-      <Form.Item name="location" label={t('event.location')}>
+      <Form.Item name="location" label={t('event.location')} rules={[{ required: true }]}>
         <LocationSelect />
       </Form.Item>
 
@@ -166,37 +166,42 @@ const EventForm = ({ form }: Props) => {
 
       <BodyLabel>{t('event.conditions')}</BodyLabel>
 
-      <Form.Item
-        name="apods:closingTime"
-        label={t('event.closing_time')}
-        getValueProps={value => ({ value: toDayjs(value) })}
-        normalize={fromDayjs}
-        dependencies={['startTime']}
-        rules={[
-          {
-            validator: async (_, value: string) => {
-              const startTime = form.getFieldValue('startTime');
-              if (value && startTime && !dayjs(value).isBefore(dayjs(startTime))) {
-                return Promise.reject(t('validation.before_start_time'));
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item
+            name="apods:closingTime"
+            label={t('event.closing_time')}
+            getValueProps={value => ({ value: toDayjs(value) })}
+            normalize={fromDayjs}
+            dependencies={['startTime']}
+            rules={[
+              {
+                validator: async (_, value: string) => {
+                  const startTime = form.getFieldValue('startTime');
+                  if (value && startTime && !dayjs(value).isBefore(dayjs(startTime))) {
+                    return Promise.reject(t('validation.before_start_time'));
+                  }
+                }
               }
-            }
-          }
-        ]}
-      >
-        <DatePicker
-          showTime={{ format: 'HH:mm' }}
-          format="DD/MM/YYYY HH:mm"
-          disabledDate={disabledClosingDate}
-          disabledTime={disabledClosingTime}
-          style={{ width: '100%' }}
-        />
-      </Form.Item>
+            ]}
+          >
+            <DatePicker
+              showTime={{ format: 'HH:mm' }}
+              format="DD/MM/YYYY HH:mm"
+              disabledDate={disabledClosingDate}
+              disabledTime={disabledClosingTime}
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Form.Item name="apods:maxAttendees" label={t('event.max_attendees')} extra={t('event.max_attendees_help')}>
+            <InputNumber min={1} style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+      </Row>
 
-      <Form.Item name="apods:maxAttendees" label={t('event.max_attendees')} help={t('event.max_attendees_help')}>
-        <InputNumber min={1} style={{ width: '100%' }} />
-      </Form.Item>
-
-      <Form.Item name="apods:otherConditions" label={t('event.other_conditions')} help={t('event.other_conditions_help')}>
+      <Form.Item name="apods:otherConditions" label={t('event.other_conditions')} extra={t('event.other_conditions_help')}>
         <Input.TextArea rows={3} />
       </Form.Item>
     </>

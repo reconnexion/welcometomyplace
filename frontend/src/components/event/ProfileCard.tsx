@@ -38,7 +38,7 @@ const ProfileCard = () => {
       {frontendUrl && (
         <div style={{ padding: '0 24px 24px' }}>
           <a href={urlJoin(frontendUrl, 'settings/profiles/private')}>
-            <Button type="primary" block className="ap-btn-uppercase">
+            <Button type="primary" block>
               {t('nav.my_profile')}
             </Button>
           </a>
