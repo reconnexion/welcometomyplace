@@ -1,0 +1,196 @@
+{
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "createSuccess": "Successfully created {{resource}}",
+    "createError": "Error creating: {{statusCode}}",
+    "editSuccess": "Successfully updated {{resource}}",
+    "editError": "Error updating: {{statusCode}}",
+    "deleteSuccess": "Successfully deleted {{resource}}",
+    "deleteError": "Error deleting: {{statusCode}}"
+  },
+  "actions": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "share": "Share",
+    "search": "Search",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "back": "Back",
+    "refresh": "Refresh",
+    "upload": "Upload",
+    "add": "Add"
+  },
+  "buttons": {
+    "refresh": "Refresh",
+    "logout": "Logout"
+  },
+  "nav": {
+    "support": "Support us",
+    "my_events": "My events",
+    "home": "Home",
+    "my_profile": "My profile",
+    "network": "My network",
+    "apps": "My apps",
+    "data": "My data",
+    "settings": "Settings"
+  },
+  "pages": {
+    "login": {
+      "choosePodProvider": "Choose the Pod provider that hosts your ActivityPods account",
+      "podProvidersNotLoaded": "Unable to load the list of Pod providers",
+      "backToLogin": "Back to login"
+    },
+    "signup_redirecting": "Redirecting to account creation..."
+  },
+  "home": {
+    "title": "Open your home for simple and enriching encounters",
+    "subtitle": "... and contribute to the development of a network of trust in your area",
+    "how_does_it_work": "How does it work?",
+    "step_1": {
+      "description": "In just a few minutes, I can organize a meeting at my place, setting the date and maximum number of participants.",
+      "hashtag": "#simplicity"
+    },
+    "step_2": {
+      "description": "I invite the contacts of my choice, possibly giving them the right to share the invitation with their own contacts.",
+      "hashtag": "#sovereignty"
+    },
+    "step_3": {
+      "description": "At the end of the meeting, all participants have the opportunity to add the other participants to their contacts.",
+      "hashtag": "#decentralization"
+    },
+    "events_ideas": "Ideas for events",
+    "app_supported_by": "A social app supported by",
+    "reconnexion_tagline": "Facilitating the emergence of a Universal Social Network promoting encounters, mutual aid, and cooperation."
+  },
+  "validation": {
+    "required": "Required",
+    "future_date": "Must be in the future",
+    "after_start_time": "Must be after the start time",
+    "before_start_time": "Must be before the start time"
+  },
+  "markdown": {
+    "write": "Write",
+    "preview": "Preview"
+  },
+  "formats": {
+    "open_table": "Open table",
+    "film_debate": "Film debate",
+    "book_club": "Book club",
+    "talking_circle": "Talking circle"
+  },
+  "format": {
+    "all_formats": "All event formats",
+    "recipe": "Recipe",
+    "propose_this": "Host this kind of encounter",
+    "name": "Name",
+    "summary": "Summary",
+    "create": "Add a format",
+    "edit": "Edit format"
+  },
+  "time": {
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "hours_one": "{{count}} hour",
+    "hours_other": "{{count}} hours",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes"
+  },
+  "event": {
+    "event": "The event",
+    "organizer": "Organizer",
+    "date": "Date",
+    "duration": "Duration",
+    "conditions": "Conditions",
+    "no_condition": "None",
+    "closing_time": "Closing time",
+    "max_attendees": "Max attendees",
+    "attendees": "Attendees",
+    "location": "Location",
+    "location_section": "Location",
+    "search_address": "Search an address",
+    "add_location": "Add an address",
+    "add_short": "Add",
+    "location_name": "Location name",
+    "location_comment": "Additional information to help attendees find this place",
+    "select_location": "Choose a location",
+    "no_location": "No location yet",
+    "default_location_name": "At {{name}}'s",
+    "content": "About",
+    "start_time": "Start time",
+    "end_time": "End time",
+    "event_type": "Event type",
+    "other_conditions": "Other conditions",
+    "other_conditions_help": "You can enter several additional conditions (one per line)",
+    "max_attendees_help": "Warning: you are counted as an attendee",
+    "event_created": "Event created",
+    "event_updated": "Event updated",
+    "event_creating": "The event is being created",
+    "title": "Title",
+    "image": "Image",
+    "first_event_help": "If you have any questions or difficulties creating events, feel free to contact us on the",
+    "forum_name": "Reconnexion forum",
+    "unknown_user": "Unknown",
+    "tab_coming": "Coming events",
+    "tab_finished": "Finished events",
+    "create": "Add an event",
+    "create_short": "Add",
+    "my_events": "Dashboard",
+    "join": "Join",
+    "leave": "Leave",
+    "event_joined": "You have joined this event",
+    "event_left": "You have left this event",
+    "event_closed": "This event is closed",
+    "event_finished": "This event is finished",
+    "draft_mode": "You are currently the only one who can see this event. As soon as you are satisfied with its presentation, you can share it with your contacts (top-right button).",
+    "join_right": "You have been invited to this event. To accept the invitation, please click on the \"Join\" button.",
+    "share_right": "The organizer has given you the right to share this event with your contacts (top-right button).",
+    "contact_organizer": "Contact organizer",
+    "contact_attendees": "Contact attendees",
+    "message": "Message",
+    "send": "Send",
+    "message_sent": "Your message has been sent",
+    "message_send_error": "Error while sending the message: {{error}}",
+    "message_profile_show_right": "Sending a message to the organizer will give them the right to see your profile, in order to be able to respond.",
+    "event_message_title": "{{username}} writes you about \"{{event}}\"",
+    "edit": "Edit",
+    "clone": "Clone",
+    "clone_dialog_title": "Clone event",
+    "clone_new_date": "New start date and time",
+    "clone_success": "Event cloned successfully",
+    "clone_error": "Error cloning event",
+    "mission": "Foster living together based on welcome, trust and mutual aid",
+    "backed_by": "Backed by",
+    "not_invited": "You have not been invited to this event"
+  },
+  "share": {
+    "view": "Allowed to join",
+    "share": "Invite own contacts",
+    "no_contact": "You must add contacts to your network to share this event with them",
+    "send_invitation_one": "Send invitation",
+    "send_invitation_other": "Send {{count}} invitations",
+    "invitation_sent_one": "1 invitation sent",
+    "invitation_sent_other": "{{count}} invitations sent",
+    "general_access": "General access",
+    "access_restricted": "Users who have been invited",
+    "access_restricted_help": "Only invited people can see this event.",
+    "access_anyone_with_link": "Anyone with the link",
+    "access_anyone_with_link_help": "Anyone with the link can see this event and ask to join it.",
+    "copy_link": "Copy link",
+    "link_copied": "Link copied",
+    "link_copy_error": "The link could not be copied",
+    "link_invalid": "This share link is no longer valid"
+  },
+  "apods": {
+    "error": {
+      "app_status_unavailable": "Unable to check app status",
+      "app_offline": "The app backend is offline",
+      "app_not_listening": "The app is not listening to {{uri}}"
+    }
+  }
+}

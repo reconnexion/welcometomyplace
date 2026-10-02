@@ -2,22 +2,22 @@
   "name": "welcometomyplace-backend",
   "private": true,
   "scripts": {
-    "dev": "moleculer-runner --repl services/*.service.js services/**/*.service.js",
-    "start": "moleculer-runner services/*.service.js services/**/*.service.js",
+    "dev": "tsx node_modules/moleculer/bin/moleculer-runner.js --hot --repl services/*.service.js services/**/*.service.js",
+    "start": "tsx node_modules/moleculer/bin/moleculer-runner.js services/*.service.js services/**/*.service.js",
     "link-packages": "yarn link @activitypods/app @semapps/activitypub @semapps/auth @semapps/backup @semapps/core @semapps/crypto @semapps/importer @semapps/inference @semapps/jsonld @semapps/ldp @semapps/middlewares @semapps/migration @semapps/mime-types @semapps/ontologies @semapps/sync @semapps/nodeinfo @semapps/notifications @semapps/solid @semapps/sparql-endpoint @semapps/triplestore @semapps/void @semapps/webacl @semapps/webfinger @semapps/webhooks @semapps/webid",
     "unlink-packages": "yarn unlink @activitypods/app @semapps/activitypub @semapps/auth @semapps/backup @semapps/core @semapps/crypto @semapps/importer @semapps/inference @semapps/jsonld @semapps/ldp @semapps/middlewares @semapps/migration @semapps/mime-types @semapps/ontologies @semapps/sync @semapps/nodeinfo @semapps/notifications @semapps/solid @semapps/sparql-endpoint @semapps/triplestore @semapps/void @semapps/webacl @semapps/webfinger @semapps/webhooks @semapps/webid"
   },
   "dependencies": {
-    "@activitypods/app": "2.2.0",
-    "@semapps/activitypub": "1.1.4",
-    "@semapps/auth": "1.1.4",
-    "@semapps/crypto": "1.1.4",
-    "@semapps/core": "1.1.4",
-    "@semapps/importer": "1.1.4",
-    "@semapps/ldp": "1.1.4",
-    "@semapps/nodeinfo": "1.1.4",
-    "@semapps/solid": "1.1.4",
-    "@semapps/triplestore": "1.1.4",
+    "@activitypods/app": "2.3.2",
+    "@semapps/activitypub": "1.2.4",
+    "@semapps/auth": "1.2.4",
+    "@semapps/crypto": "1.2.4",
+    "@semapps/core": "1.2.4",
+    "@semapps/importer": "1.2.4",
+    "@semapps/ldp": "1.2.4",
+    "@semapps/nodeinfo": "1.2.4",
+    "@semapps/solid": "1.2.4",
+    "@semapps/triplestore": "1.2.4",
     "dotenv-flow": "^3.2.0",
     "ioredis": "^4.17.3",
     "moleculer": "^0.14.19",
@@ -27,6 +27,10 @@
     "url-join": "^4.0.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.12"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "devDependencies": {
+    "tsx": "^4.20.3"
   }
 }

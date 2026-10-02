@@ -1,0 +1,197 @@
+{
+  "notifications": {
+    "success": "Succès",
+    "error": "Erreur",
+    "createSuccess": "{{resource}} créé(e) avec succès",
+    "createError": "Erreur lors de la création : {{statusCode}}",
+    "editSuccess": "{{resource}} mis(e) à jour avec succès",
+    "editError": "Erreur lors de la mise à jour : {{statusCode}}",
+    "deleteSuccess": "{{resource}} supprimé(e) avec succès",
+    "deleteError": "Erreur lors de la suppression : {{statusCode}}"
+  },
+  "actions": {
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "create": "Créer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "share": "Partager",
+    "search": "Rechercher",
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "logout": "Se déconnecter",
+    "back": "Retour",
+    "refresh": "Actualiser",
+    "upload": "Choisir une image",
+    "add": "Ajouter"
+  },
+  "buttons": {
+    "refresh": "Actualiser",
+    "logout": "Se déconnecter"
+  },
+  "nav": {
+    "support": "Nous soutenir",
+    "my_events": "Mes rencontres",
+    "home": "Accueil",
+    "my_profile": "Mon profil",
+    "network": "Mon réseau",
+    "apps": "Mes applis",
+    "data": "Mes données",
+    "settings": "Paramètres"
+  },
+  "pages": {
+    "login": {
+      "choosePodProvider": "Choisissez l'hébergeur qui héberge votre compte ActivityPods",
+      "podProvidersNotLoaded": "Impossible de charger la liste des hébergeurs",
+      "backToLogin": "Retour à la connexion"
+    },
+    "signup_redirecting": "Redirection vers la création de compte..."
+  },
+  "home": {
+    "title": "Ouvrez votre maison pour des rencontres simples et enrichissantes",
+    "subtitle": "... et contribuez au développement d'un réseau de confiance dans votre région",
+    "how_does_it_work": "Comment ça marche ?",
+    "step_1": {
+      "description": "En quelques minutes, je propose une rencontre chez moi, en fixant la date et le nombre maximum de participants.",
+      "hashtag": "#simplicité"
+    },
+    "step_2": {
+      "description": "J'invite les contacts de mon choix, en leur donnant éventuellement le droit de partager l'invitation à leurs propres contacts.",
+      "hashtag": "#souveraineté"
+    },
+    "step_3": {
+      "description": "À la fin de la rencontre, tous les participants ont la possibilité d'ajouter les autres participants à leurs contacts.",
+      "hashtag": "#décentralisation"
+    },
+    "events_ideas": "Des idées de rencontres",
+    "app_supported_by": "Une application sociale portée par",
+    "reconnexion_tagline": "Faciliter l'émergence d'un Réseau Social Universel favorisant la rencontre, l'entraide et la coopération."
+  },
+  "validation": {
+    "required": "Champ requis",
+    "future_date": "Doit être dans le futur",
+    "after_start_time": "Doit être après la date de début",
+    "before_start_time": "Doit être avant la date de début"
+  },
+  "markdown": {
+    "write": "Écrire",
+    "preview": "Aperçu"
+  },
+  "formats": {
+    "open_table": "Table ouverte",
+    "film_debate": "Ciné-échanges",
+    "book_club": "Cercle de lecture",
+    "talking_circle": "Cercle de parole"
+  },
+  "format": {
+    "format": "Le format",
+    "all_formats": "Tous les formats d'événements",
+    "recipe": "Recette",
+    "propose_this": "Proposer ce type de rencontre chez soi",
+    "name": "Nom",
+    "summary": "Résumé",
+    "create": "Ajouter un format",
+    "edit": "Modifier le format"
+  },
+  "time": {
+    "days_one": "{{count}} jour",
+    "days_other": "{{count}} jours",
+    "hours_one": "{{count}} heure",
+    "hours_other": "{{count}} heures",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes"
+  },
+  "event": {
+    "event": "La rencontre",
+    "organizer": "Organisateur",
+    "date": "Date",
+    "duration": "Durée",
+    "conditions": "Conditions",
+    "no_condition": "Aucune",
+    "closing_time": "Fin des inscriptions",
+    "max_attendees": "Participants maximum",
+    "attendees": "Participants",
+    "location": "Adresse",
+    "location_section": "Localisation",
+    "search_address": "Rechercher une adresse",
+    "add_location": "Ajouter une adresse",
+    "add_short": "Ajouter",
+    "location_name": "Nom du lieu",
+    "location_comment": "Indications supplémentaires pour aider les invités à trouver ce lieu",
+    "select_location": "Choisir un lieu",
+    "no_location": "Aucun lieu pour l'instant",
+    "default_location_name": "Chez {{name}}",
+    "content": "Présentation",
+    "start_time": "Date de début",
+    "end_time": "Date de fin",
+    "event_type": "Type d'événement",
+    "other_conditions": "Autres conditions",
+    "other_conditions_help": "Vous pouvez entrer plusieurs conditions supplémentaires (une par ligne)",
+    "max_attendees_help": "Attention : vous êtes compté comme participant",
+    "event_created": "Rencontre créée",
+    "event_updated": "Rencontre mise à jour",
+    "event_creating": "Rencontre en cours de création",
+    "title": "Titre",
+    "image": "Image",
+    "first_event_help": "Si vous avez des questions ou difficultés concernant la création de rencontres, n'hésitez pas à nous contacter sur le",
+    "forum_name": "Forum Reconnexion",
+    "unknown_user": "Inconnu",
+    "tab_coming": "Prochaines rencontres",
+    "tab_finished": "Rencontres terminées",
+    "create": "Proposer une rencontre",
+    "create_short": "Proposer",
+    "my_events": "Tableau de bord",
+    "join": "Je m'inscris",
+    "leave": "Je me désinscris",
+    "event_joined": "Vous vous êtes bien inscrit à cette rencontre",
+    "event_left": "Vous vous êtes bien désinscrit de cette rencontre",
+    "event_closed": "Les inscriptions sont fermées",
+    "event_finished": "Cette rencontre est terminée",
+    "draft_mode": "Cette rencontre n'est actuellement visible que par vous. Dès que vous serez satisfait de sa présentation, vous pourrez la partager avec vos contacts (bouton en haut à droite).",
+    "join_right": "Vous avez été invité à cette rencontre. Pour accepter l'invitation, veuillez cliquer sur le bouton \"Je m'inscris\".",
+    "share_right": "L'organisateur vous a donné le droit de partager cette rencontre avec vos contacts (bouton en haut à droite).",
+    "contact_organizer": "Contacter l'organisateur",
+    "contact_attendees": "Contacter les participants",
+    "message": "Message",
+    "send": "Envoyer",
+    "message_sent": "Votre message a bien été envoyé",
+    "message_send_error": "Erreur lors de l'envoi du message : {{error}}",
+    "message_profile_show_right": "Envoyer un message à l'organisateur lui donnera le droit de voir votre profil, pour lui permettre de vous répondre.",
+    "event_message_title": "{{username}} vous écrit au sujet de \"{{event}}\"",
+    "edit": "Modifier",
+    "clone": "Dupliquer",
+    "clone_dialog_title": "Dupliquer la rencontre",
+    "clone_new_date": "Nouvelle date et heure de début",
+    "clone_success": "Rencontre dupliquée avec succès",
+    "clone_error": "Erreur lors de la duplication de la rencontre",
+    "mission": "Favoriser un vivre ensemble basé sur l'accueil, la confiance et l'entraide",
+    "backed_by": "Proposé par",
+    "not_invited": "Vous n'avez pas été invité à cette rencontre"
+  },
+  "share": {
+    "view": "Droit de s'inscrire",
+    "share": "Inviter ses contacts",
+    "no_contact": "Vous devez ajouter des contacts à votre réseau pour leur partager cette rencontre",
+    "send_invitation_one": "Envoyer l'invitation",
+    "send_invitation_other": "Envoyer {{count}} invitations",
+    "invitation_sent_one": "1 invitation envoyée",
+    "invitation_sent_other": "{{count}} invitations envoyées",
+    "general_access": "Accès général",
+    "access_restricted": "Utilisateurs qui ont été invités",
+    "access_restricted_help": "Seules les personnes invitées peuvent voir cette rencontre.",
+    "access_anyone_with_link": "Tous les utilisateurs qui ont le lien",
+    "access_anyone_with_link_help": "Toute personne disposant du lien peut voir cette rencontre et demander à s'y inscrire.",
+    "copy_link": "Copier le lien",
+    "link_copied": "Lien copié",
+    "link_copy_error": "Le lien n'a pas pu être copié",
+    "link_invalid": "Ce lien de partage n'est plus valide"
+  },
+  "apods": {
+    "error": {
+      "app_status_unavailable": "Impossible de vérifier le statut de l'application",
+      "app_offline": "L'application est hors ligne",
+      "app_not_listening": "L'application n'écoute pas {{uri}}"
+    }
+  }
+}

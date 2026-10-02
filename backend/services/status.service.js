@@ -129,12 +129,14 @@ module.exports = {
           actorUri
         });
 
-        const { body: attendeesCollection } = await ctx.call('pod-resources.get', {
-          resourceUri: attendeesCollectionUri,
-          actorUri
-        });
+        if (attendeesCollectionUri) {
+          const { body: attendeesCollection } = await ctx.call('pod-resources.get', {
+            resourceUri: attendeesCollectionUri,
+            actorUri
+          });
 
-        maxAttendeesReached = arrayOf(attendeesCollection.items).length >= event['apods:maxAttendees'];
+          maxAttendeesReached = arrayOf(attendeesCollection.items).length >= event['apods:maxAttendees'];
+        }
       }
 
       if (maxAttendeesReached || closingTimeReached) {

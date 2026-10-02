@@ -15,7 +15,7 @@ module.exports = {
     },
     oidc: {
       clientUri: CONFIG.FRONT_URL,
-      redirectUris: urlJoin(CONFIG.FRONT_URL, 'auth-callback'),
+      redirectUris: urlJoin(CONFIG.FRONT_URL, 'login'),
       postLogoutRedirectUris: urlJoin(CONFIG.FRONT_URL, 'login?logout=true'),
       tosUri: null
     },

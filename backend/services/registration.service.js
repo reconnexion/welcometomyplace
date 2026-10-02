@@ -1,9 +1,54 @@
+const urlJoin = require('url-join');
+const { MoleculerError } = require('moleculer').Errors;
 const { ACTIVITY_TYPES, OBJECT_TYPES } = require('@semapps/activitypub');
 const { PodActivitiesHandlerMixin } = require('@activitypods/app');
+const { arrayOf } = require('@semapps/ldp');
 
 module.exports = {
   name: 'registration',
   mixins: [PodActivitiesHandlerMixin],
+  methods: {
+    /**
+     * Decide whether a `Join` from someone who was never invited may be accepted anyway, on the
+     * strength of the credential behind a public event link (see the share dialog's "general
+     * access" setting, and `frontend/src/utils/capability.ts` for how the credential is minted).
+     *
+     * The credential's URI travels on the activity's `instrument` — not on `capability`, which
+     * holds the signed presentation the organizer's Pod verifies on receipt but which, not being
+     * an ActivityStreams term, does not survive being stored in the triplestore and so is gone by
+     * the time we read the activity back from the Pod.
+     *
+     * That presentation check happens on the Pod and its failures are only logged, so it cannot
+     * be relied on here. What makes this safe on its own is re-fetching the credential from the
+     * organizer's own Pod: possession of an unguessable, still-existing credential URI *is* the
+     * authorization, exactly as for a "anyone with the link" share.
+     */
+    async isAllowedByPublicLink(ctx, activity, event, organizerUri) {
+      const capabilityUri = activity.instrument?.id || activity.instrument;
+      if (typeof capabilityUri !== 'string') return false;
+
+      // Only the organizer can have issued a credential granting access to their own event, so
+      // anything hosted elsewhere is not worth dereferencing.
+      if (!capabilityUri.startsWith(urlJoin(organizerUri, '/'))) return false;
+
+      // Fetch it fresh rather than trusting whatever the sender attached: this proves the link
+      // has not been revoked (a deleted credential 404s here) and means the grant being checked
+      // is the organizer's own wording.
+      const { ok, body: capability } = await ctx.call('pod-resources.get', {
+        resourceUri: capabilityUri,
+        actorUri: organizerUri
+      });
+      if (!ok || !capability || capability.issuer !== organizerUri) return false;
+
+      return arrayOf(capability.credentialSubject).some(subject =>
+        arrayOf(subject['apods:hasActivityGrant']).some(grant => {
+          const object = grant['as:object']?.id || grant['as:object'];
+          const types = arrayOf(grant.type || grant['@type']);
+          return object === event.id && types.some(type => typeof type === 'string' && type.endsWith('Join'));
+        })
+      );
+    }
+  },
   activities: {
     join: {
       match: {
@@ -38,13 +83,48 @@ module.exports = {
           throw new MoleculerError('Registrations for this event are closed', 403, 'FORBIDDEN');
         }
 
-        const announces = await ctx.call('pod-collections.getItems', {
-          collectionUri: event['apods:announces'],
-          actorUri
-        });
+        const organizerUri = event['dc:creator'];
+
+        // An event that was never shared has no announces collection at all
+        const announces = event['apods:announces']
+          ? await ctx.call('pod-collections.getItems', {
+              collectionUri: event['apods:announces'],
+              actorUri
+            })
+          : [];
 
         if (!announces.includes(activity.actor)) {
-          throw new MoleculerError('You have not been invited to this event', 400, 'BAD REQUEST');
+          const allowedByLink = await this.isAllowedByPublicLink(ctx, activity, event, organizerUri);
+
+          if (!allowedByLink) {
+            // Deliberately not a throw: someone trying to join without an invitation is an
+            // expected outcome, not a processing failure. `pod-activities-watcher.processWebhook`
+            // doesn't catch what a handler throws, so throwing here takes the whole app backend
+            // down — along with every other Pod it was watching.
+            this.logger.warn(
+              `Ignoring Join of ${activity.actor} on ${event.id}: not invited, and no valid public link capability`
+            );
+            return;
+          }
+
+          // Put them on the same footing as an invited guest rather than leaving them dependent
+          // on the link: announcing the event to them is what makes the Pod add them to
+          // `apods:announces` and to the WebACL group that grants read access to the event and
+          // its location.
+          await ctx.call('pod-outbox.post', {
+            activity: {
+              type: ACTIVITY_TYPES.ANNOUNCE,
+              actor: organizerUri,
+              object: event.id,
+              target: activity.actor,
+              to: activity.actor,
+              // Marks the Announce as a consequence of the recipient's own request, so that
+              // `invitation.service.js` doesn't tell them they have been invited to the event
+              // they just asked to join.
+              context: activity.id
+            },
+            actorUri: organizerUri
+          });
         }
 
         await ctx.call('attendees.add', {
