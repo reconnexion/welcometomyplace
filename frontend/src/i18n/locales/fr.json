@@ -165,9 +165,15 @@
     "clone_new_date": "Nouvelle date et heure de début",
     "clone_success": "Rencontre dupliquée avec succès",
     "clone_error": "Erreur lors de la duplication de la rencontre",
-    "mission": "Favoriser un vivre ensemble basé sur l'accueil, la confiance et l'entraide",
     "backed_by": "Proposé par",
-    "not_invited": "Vous n'avez pas été invité à cette rencontre"
+    "not_invited": "Vous n'avez pas été invité à cette rencontre",
+    "mission": "Favoriser un vivre ensemble basé sur l'accueil, la confiance et l'entraide",
+    "interested": "Intéressé(e) mais pas dispo",
+    "not_interested": "Plus intéressé(e)",
+    "interested_count_one": "1 intéressé(e)",
+    "interested_count_other": "{{count}} intéressé(e)s",
+    "interested_success": "L'organisateur a été averti de votre intérêt",
+    "not_interested_success": "Vous n'êtes plus intéressé(e) par cette rencontre"
   },
   "share": {
     "view": "Droit de s'inscrire",

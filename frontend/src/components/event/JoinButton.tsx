@@ -88,6 +88,7 @@ const JoinButton = ({ event, ...buttonProps }: Props) => {
         to: event['dc:creator'],
         ...credentials
       });
+
       message.success(t(type === 'Join' ? 'event.event_joined' : 'event.event_left'));
       setJoined(type === 'Join');
       waitForAttendeeUpdate(type === 'Join');

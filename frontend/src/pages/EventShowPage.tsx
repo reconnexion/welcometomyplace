@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useOne, useParsed } from '@refinedev/core';
+import { useOne, useParsed, useGetIdentity } from '@refinedev/core';
 import { useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { App, Col, Grid, Row, Space, Spin } from 'antd';
@@ -19,6 +19,7 @@ import EditButton from '../components/common/EditButton';
 import ShareButton from '../components/share/ShareButton';
 import CloneEventButton from '../components/event/CloneEventButton';
 import JoinButton from '../components/event/JoinButton';
+import InterestedButton from '../components/event/InterestedButton';
 import useActivityCollection from '../hooks/useActivityCollection';
 import useCapability from '../hooks/useCapability';
 import useCapabilityImage from '../hooks/useCapabilityImage';
@@ -90,6 +91,7 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
   const screens = useBreakpoint();
   const isMobile = !screens.sm;
   const leaveEvent = useLeaveEvent();
+  const { data: identity } = useGetIdentity();
 
   const { result: event, query } = useOne<EventRecord>({
     resource: 'event',
@@ -114,6 +116,8 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
     queryOptions: { enabled: !!format?.['skos:broader'] }
   });
   const { items: attendeeUris } = useActivityCollection(event?.['apods:attendees']);
+  const { items: interestedUris } = useActivityCollection(event?.likes);
+  const interestedButNotAttendingUris = interestedUris?.filter(uri => !attendeeUris.includes(uri));
 
   const image = useCapabilityImage(
     event && (Array.isArray(event.image) ? event.image[0] : event.image),
@@ -178,6 +182,19 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
                 <BodyLabel>{t('event.attendees')}</BodyLabel>
                 <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
                   {attendeeUris.map(uri => (
+                    <Col key={uri} xs={8} sm={4}>
+                      <AttendeeAvatar actorUri={uri} />
+                    </Col>
+                  ))}
+                </Row>
+              </>
+            )}
+
+            {event['dc:creator'] === identity?.id && interestedButNotAttendingUris.length > 0 && (
+              <>
+                <BodyLabel>{t('event.interested')}</BodyLabel>
+                <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+                  {interestedButNotAttendingUris.map(uri => (
                     <Col key={uri} xs={8} sm={4}>
                       <AttendeeAvatar actorUri={uri} />
                     </Col>
