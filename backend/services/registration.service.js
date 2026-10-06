@@ -174,7 +174,8 @@ module.exports = {
         });
 
         if (!attendees.includes(activity.actor)) {
-          throw new MoleculerError('You are not attending this event', 400);
+          this.logger.warn(`Cannot remove ${activity.actor} from ${event.id}: not in attendees`);
+          return;
         }
 
         const collectionUri = await ctx.call('attendees.getCollectionUriFromResource', {
