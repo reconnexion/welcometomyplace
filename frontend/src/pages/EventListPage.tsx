@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useList } from '@refinedev/core';
 import { Alert, Button, Col, Grid, Row, Spin, Tabs } from 'antd';
@@ -9,6 +9,7 @@ import PageLayout from '../components/layout/PageLayout';
 import EventListItem from '../components/event/EventListItem';
 import ProfileCard from '../components/event/ProfileCard';
 import type { EventRecord } from '../types';
+import { isEventFinished } from '../utils/eventStatus';
 
 const EventListPage = () => {
   const { t } = useTranslation();
@@ -17,21 +18,17 @@ const EventListPage = () => {
 
   const { result, query } = useList<EventRecord>({
     resource: 'event',
-    // `apods:hasStatus` combines two independent axes (Coming/Finished and Open/Closed, e.g.
-    // `[apods:Coming, apods:Open]`) — the tabs only care about the Coming/Finished one. The
-    // backend returns this compacted to CURIE form (`apods:Coming`), not the full IRI the old
-    // app's (server-side, IRI-aware SPARQL) filter used — this data provider compares plain
-    // strings client-side, so the filter value has to match the actual returned representation.
-    filters: [
-      {
-        field: 'apods:hasStatus',
-        operator: 'eq',
-        value: tab === 'coming' ? 'apods:Coming' : 'apods:Finished'
-      }
-    ],
-    sorters: [{ field: 'startTime', order: tab === 'coming' ? 'asc' : 'desc' }],
+    // The coming/finished split is based on `endTime` rather than on `apods:hasStatus`: the
+    // status is switched by a backend timer, and copies of an event held by invitees (or events
+    // whose timer was lost) may still say `apods:Coming` long after the event ended.
     pagination: { mode: 'off' }
   });
+
+  const events = useMemo(() => {
+    const filtered = result.data.filter(event => isEventFinished(event) === (tab === 'finished'));
+    const time = (event: EventRecord) => new Date(event.startTime).getTime();
+    return filtered.sort((a, b) => (tab === 'coming' ? time(a) - time(b) : time(b) - time(a)));
+  }, [result.data, tab]);
 
   return (
     <PageLayout>
@@ -91,7 +88,7 @@ const EventListPage = () => {
             {query.isLoading ? (
               <Spin />
             ) : (
-              result.data.map((event: EventRecord) => <EventListItem key={event.id} event={event} />)
+              events.map((event: EventRecord) => <EventListItem key={event.id} event={event} />)
             )}
           </Col>
           <Col xs={0} md={8} lg={7}>

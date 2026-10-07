@@ -9,7 +9,7 @@ import useActivityCollection from '../../hooks/useActivityCollection';
 import useCapability from '../../hooks/useCapability';
 import { authProvider } from '../../providers';
 import { createPresentation } from '../../utils/capability';
-import { arrayOf } from '@activitypods/refine-providers/utils';
+import { isEventClosed, isEventFinished } from '../../utils/eventStatus';
 import type { EventRecord, Identity } from '../../types';
 
 type Props = ButtonProps & {
@@ -51,9 +51,8 @@ const JoinButton = ({ event, ...buttonProps }: Props) => {
   }, [attendees, identity]);
 
   const isOrganizer = event['dc:creator'] === identity?.id;
-  const status = arrayOf(event['apods:hasStatus']);
-  const isClosed = status.includes('apods:Closed');
-  const isFinished = status.includes('apods:Finished');
+  const isClosed = isEventClosed(event);
+  const isFinished = isEventFinished(event);
 
   // The organizer's Pod processes Join/Leave asynchronously (real ActivityPub delivery to their
   // inbox, then a collection update) — a single refetch after a fixed delay risks running before

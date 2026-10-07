@@ -16,5 +16,7 @@ module.exports = {
   JENA_PASSWORD: process.env.SEMAPPS_JENA_PASSWORD,
   REDIS_CACHE_URL: process.env.SEMAPPS_REDIS_CACHE_URL,
   QUEUE_SERVICE_URL: process.env.SEMAPPS_QUEUE_SERVICE_URL,
-  AUTH_ACCOUNTS_DATASET_NAME: process.env.SEMAPPS_AUTH_ACCOUNTS_DATASET_NAME
+  AUTH_ACCOUNTS_DATASET_NAME: process.env.SEMAPPS_AUTH_ACCOUNTS_DATASET_NAME,
+  // Reschedule the events status timers (and fix past statuses) a minute after startup
+  RESCHEDULE_TIMERS_ON_START: process.env.SEMAPPS_RESCHEDULE_TIMERS_ON_START !== 'false'
 };

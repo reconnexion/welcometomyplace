@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from 'antd';
-import { arrayOf } from '@activitypods/refine-providers/utils';
 
 import JoinButton from './JoinButton';
 import InterestedButton from './InterestedButton';
 import type { EventRecord } from '../../types';
+import { isEventClosed, isEventFinished } from '../../utils/eventStatus';
 
 type Props = {
   event: EventRecord;
@@ -14,11 +14,10 @@ type Props = {
 
 const EventJoinCard = ({ event, children }: Props) => {
   const { t } = useTranslation();
-  const status = arrayOf(event['apods:hasStatus']);
-  const statusMessage = status.includes('apods:Closed')
-    ? t('event.event_closed')
-    : status.includes('apods:Finished')
-      ? t('event.event_finished')
+  const statusMessage = isEventFinished(event)
+    ? t('event.event_finished')
+    : isEventClosed(event)
+      ? t('event.event_closed')
       : undefined;
 
   return (

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useGetIdentity } from '@refinedev/core';
 import { Alert } from 'antd';
-import { arrayOf } from '@activitypods/refine-providers/utils';
+import { isEventClosed, isEventFinished } from '../../utils/eventStatus';
 
 import useActivityCollection from '../../hooks/useActivityCollection';
 import type { EventRecord, Identity } from '../../types';
@@ -26,8 +26,7 @@ const EventAlert = ({ event }: Props) => {
   if (event['dc:creator'] === identity.id) {
     if (announces.length === 0) messageKey = 'event.draft_mode';
   } else {
-    const status = arrayOf(event['apods:hasStatus']);
-    if (!attendees.includes(identity.id) && !status.includes('apods:Closed')) {
+    if (!attendees.includes(identity.id) && !isEventClosed(event) && !isEventFinished(event)) {
       messageKey = 'event.join_right';
     } else if (announcers.includes(identity.id)) {
       messageKey = 'event.share_right';
