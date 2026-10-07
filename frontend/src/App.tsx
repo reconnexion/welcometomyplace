@@ -2,7 +2,7 @@ import { Authenticated, Refine } from '@refinedev/core';
 import { useNotificationProvider, ErrorComponent } from '@refinedev/antd';
 import routerProvider, { CatchAllNavigate, UnsavedChangesNotifier } from '@refinedev/react-router';
 import { AntdAuthPage } from '@activitypods/refine-providers/antd-auth-page';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router';
+import { BrowserRouter, Routes, Route, Outlet, Navigate, useParams } from 'react-router';
 import { App as AntdApp, ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
 import frFR from 'antd/locale/fr_FR';
@@ -85,6 +85,9 @@ const App = () => (
               visitor with neither a session nor a `?cap=` credential on to /login.
             */}
             <Route path="/events/:id" element={<EventShowPage />} />
+            {/* Links of the old react-admin app, still in notifications and emails */}
+            <Route path="/Event/:id/show" element={<LegacyEventRedirect />} />
+            <Route path="/Event/:id" element={<LegacyEventRedirect />} />
 
             <Route
               element={
@@ -122,3 +125,8 @@ const App = () => (
 );
 
 export default App;
+
+function LegacyEventRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/events/${encodeURIComponent(id ?? '')}`} replace />;
+}

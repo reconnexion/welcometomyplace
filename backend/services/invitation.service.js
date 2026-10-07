@@ -33,7 +33,7 @@ module.exports = {
                     en: 'View',
                     fr: 'Voir'
                   },
-                  link: '/Event/{{encodeUri activity.object.id}}/show'
+                  link: '/events/{{encodeUri activity.object.id}}'
                 }
               ]
             },
