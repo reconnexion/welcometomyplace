@@ -2,7 +2,9 @@
 .PHONY: docker-build docker-up build start log stop restart
 
 DOCKER_COMPOSE_DEV=docker compose -f docker-compose-dev.yml --env-file frontend/.env --env-file frontend/.env.local
-DOCKER_COMPOSE_PROD=docker compose -f docker-compose-prod.yml --env-file .env.production --env-file .env.production.local
+# Override to build/publish another deployment, e.g. `make publish-frontend PROD_ENV_FILE=.env.production.dev.local`
+PROD_ENV_FILE ?= .env.production.local
+DOCKER_COMPOSE_PROD=docker compose -f docker-compose-prod.yml --env-file .env.production --env-file $(PROD_ENV_FILE)
 
 # Dev commands
 
