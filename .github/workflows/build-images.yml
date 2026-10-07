@@ -1,0 +1,93 @@
+name: Build and publish Docker images
+
+# Builds the Welcome to my place / Bienvenue chez moi backend and frontend release
+# images and pushes them to the GitHub Container Registry:
+#
+#   push of a `v*` git tag -> :x.y.z and :latest images, built for PROD_DOMAIN_NAME
+#
+# The dev environment and the pull request previews are not built here anymore:
+# Coolify builds them itself from docker-compose.coolify.yml (see the README).
+#
+# The frontend values are inlined by Vite at build time, which is why the
+# target domain has to be known here and not at deployment time. The
+# PROD_DOMAIN_NAME repository variable must be set: there is no default.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: build-images-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Base name of the published images (ghcr.io/<owner>/<IMAGE_NAME>-backend, -frontend).
+  # Named after the deployed variant, matching the existing Docker Hub images.
+  IMAGE_NAME: bienvenuechezmoi
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [backend, frontend]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select the target environment
+        id: env
+        run: |
+          # The same code base ships as "Welcome to my place" (en) and "Bienvenue chez moi" (fr):
+          # name, description and language are inlined in the frontend bundle, so pick the
+          # variant through the APP_NAME / APP_DESCRIPTION / APP_LANG repository variables.
+          domain="${{ vars.PROD_DOMAIN_NAME }}"
+          if [ -z "$domain" ]; then
+            echo "::error::The PROD_DOMAIN_NAME repository variable is not set (Settings > Secrets and variables > Actions > Variables)"
+            exit 1
+          fi
+          echo "domain=$domain" >> "$GITHUB_OUTPUT"
+          echo "app_name=${{ vars.APP_NAME || 'Welcome to my place' }}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-${{ matrix.component }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/${{ matrix.component }}.dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.component }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.component }}
+          # Ignored by the backend image, which takes no build argument
+          build-args: |
+            VITE_APP_NAME=${{ steps.env.outputs.app_name }}
+            VITE_APP_DESCRIPTION=${{ vars.APP_DESCRIPTION || 'Foster living together based on welcome, trust and mutual aid' }}
+            VITE_APP_LANG=${{ vars.APP_LANG || 'en' }}
+            VITE_BACKEND_URL=https://${{ steps.env.outputs.domain }}/api/
+            VITE_BACKEND_CLIENT_ID=https://${{ steps.env.outputs.domain }}/api/app
+            # Set the POD_PROVIDER_BASE_URL repository variable to restrict the login page to
+            # a single Pod provider. Unset, it lists the public providers and lets the user pick.
+            VITE_DEFAULT_POD_PROVIDER=${{ vars.POD_PROVIDER_BASE_URL }}
+            VITE_MAPBOX_ACCESS_TOKEN=${{ secrets.MAPBOX_ACCESS_TOKEN }}

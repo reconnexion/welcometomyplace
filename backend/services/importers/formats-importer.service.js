@@ -17,6 +17,18 @@ module.exports = {
       containerUri: urlJoin(CONFIG.HOME_URL, '/apods/event-format')
     }
   },
+  dependencies: ['formats'],
+  async started() {
+    // Import the formats on a fresh dataset (e.g. a new preview deployment)
+    const isEmpty = await this.broker.call('ldp.container.isEmpty', {
+      containerUri: this.settings.dest.containerUri,
+      webId: 'system'
+    });
+    if (isEmpty) {
+      this.logger.info('No event formats found, importing them...');
+      await this.actions.freshImport({ clear: false });
+    }
+  },
   methods: {
     transform(data) {
       return {
