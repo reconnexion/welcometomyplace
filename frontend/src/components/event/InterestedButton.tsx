@@ -7,7 +7,7 @@ import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 import useOutbox from '../../hooks/useOutbox';
 import useActivityCollection from '../../hooks/useActivityCollection';
 import { authProvider } from '../../providers';
-import { arrayOf } from '@activitypods/refine-providers/utils';
+import { isEventFinished } from '../../utils/eventStatus';
 import type { EventRecord, Identity } from '../../types';
 
 type Props = ButtonProps & {
@@ -36,8 +36,7 @@ const InterestedButton = ({ event, ...buttonProps }: Props) => {
   const isOrganizer = event['dc:creator'] === identity?.id;
   const isInvited = announcesUris.includes(identity?.id ?? '');
   const hasJoined = attendees.includes(identity?.id ?? '');
-  const status = arrayOf(event['apods:hasStatus']);
-  const isFinished = status.includes('apods:Finished');
+  const isFinished = isEventFinished(event);
 
   const waitForLikeUpdate = async (expectInterested: boolean) => {
     for (let attempt = 0; attempt < 10; attempt++) {
