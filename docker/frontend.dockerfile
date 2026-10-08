@@ -39,4 +39,6 @@ COPY --from=build /app/frontend/dist ./dist
 
 EXPOSE 4000
 
-CMD serve -s dist -l 4000
+COPY docker/frontend-start.sh ./
+
+CMD ["./frontend-start.sh"]

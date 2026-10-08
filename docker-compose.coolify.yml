@@ -75,6 +75,12 @@ services:
       - backend
     expose:
       - '4000'
+    # Read when the container starts (see docker/frontend-start.sh): no rebuild needed
+    environment:
+      # true shows the maintenance page instead of the app (the backend keeps running)
+      MAINTENANCE: ${MAINTENANCE:-false}
+      # Lets testers in during the maintenance, with ?preview=<code>
+      MAINTENANCE_PREVIEW_CODE: ${MAINTENANCE_PREVIEW_CODE:-}
 
   wtmp-redis:
     image: redis:7-alpine
