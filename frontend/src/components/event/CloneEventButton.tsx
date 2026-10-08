@@ -3,9 +3,11 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { useCreate, useGetIdentity } from '@refinedev/core';
+import { useNavigate } from 'react-router';
 import { App, Button, DatePicker, Modal } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 
+import useWaitForPredicates from '../../hooks/useWaitForPredicates';
 import type { EventRecord, Identity } from '../../types';
 
 type Props = {
@@ -16,12 +18,15 @@ const CloneEventButton = ({ event }: Props) => {
   const { t } = useTranslation();
   const { message } = App.useApp();
   const { data: identity } = useGetIdentity<Identity>();
+  const navigate = useNavigate();
+  const waitForPredicates = useWaitForPredicates();
 
   const creatorUri = event['dc:creator'];
   if (!creatorUri || creatorUri !== identity?.id) return null;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStartDate, setNewStartDate] = useState<Dayjs | null>(null);
+  const [redirecting, setRedirecting] = useState(false);
 
   const originalStartTime = dayjs(event.startTime);
 
@@ -64,10 +69,13 @@ const CloneEventButton = ({ event }: Props) => {
         values: clonedEvent
       },
       {
-        onSuccess: () => {
-          setIsModalOpen(false);
-          setNewStartDate(null);
+        onSuccess: async ({ data }) => {
+          setRedirecting(true);
           message.success(t('event.clone_success'));
+          // Like EventCreatePage, wait for the fields the backend adds asynchronously: saving the
+          // edit form before the attendees collection is attached would detach it.
+          const record = await waitForPredicates('event', data, ['apods:attendees', 'apods:hasStatus', 'dc:creator']);
+          navigate(`/events/${encodeURIComponent(record.id as string)}/edit`);
         },
         onError: () => {
           message.error(t('event.clone_error'));
@@ -100,7 +108,7 @@ const CloneEventButton = ({ event }: Props) => {
           <Button
             key="submit"
             type="primary"
-            loading={mutation.isPending}
+            loading={mutation.isPending || redirecting}
             onClick={handleClone}
             disabled={!isFormValid}
           >
