@@ -160,7 +160,8 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 24px 80px' }}>
         <Row gutter={24}>
-          <Col xs={24} md={16} lg={17}>
+          {/* Same size as the values of the details row above (IconsList), instead of Antd's 14px */}
+          <Col xs={24} md={16} lg={17} style={{ fontSize: 16 }}>
             <EventAlert event={event} />
 
             {image && (

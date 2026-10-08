@@ -19,7 +19,7 @@ const EventCard = ({ event }: Props) => {
 
   return (
     <>
-      <h2 className="ap-font-display" style={{ margin: 0, fontSize: 20, fontWeight: 500, lineHeight: 1.8, color: '#FFA500' }}>
+      <h2 className="ap-font-display" style={{ margin: '4px 0', fontSize: 26, fontWeight: 500, lineHeight: 1.3, color: '#FFA500' }}>
         {event.name}
       </h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: 8 }}>
