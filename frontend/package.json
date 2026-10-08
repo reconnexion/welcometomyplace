@@ -10,7 +10,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@activitypods/refine-providers": "^0.1.6",
+    "@activitypods/refine-providers": "^0.2.0",
     "@ant-design/icons": "^5.5.1",
     "@refinedev/antd": "^6.0.3",
     "@refinedev/core": "^5.0.12",

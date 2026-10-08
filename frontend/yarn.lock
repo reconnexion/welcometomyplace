@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@activitypods/refine-providers@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@activitypods/refine-providers/-/refine-providers-0.1.6.tgz#f1baed2c559e8c56fe1b7cd224b12f4d37a95774"
-  integrity sha512-WtKHi+ppIQak6VpQcfTzAWqKh0X7dv/xAd3WBpNuS3rPYp40zt6g+E3EVWPvHfVsn3s1cC9TcAJEZ2OnbYIJXA==
+"@activitypods/refine-providers@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@activitypods/refine-providers/-/refine-providers-0.2.0.tgz#8166a34a24f7e07860292cc54a41f6da16449d91"
+  integrity sha512-iuhN19ogAUM9rxv+hQAKz8MSNAhYJe/rKIfm+Ykp1kiOBJxZ9B8tfS25AQx73QW+1N1z3mxW6sp+pdM1GxxR4A==
   dependencies:
     http-link-header "^1.1.3"
     jsonld "^8.0.0"

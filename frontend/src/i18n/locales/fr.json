@@ -179,6 +179,7 @@
     "view": "Droit de s'inscrire",
     "share": "Inviter ses contacts",
     "no_contact": "Vous devez ajouter des contacts à votre réseau pour leur partager cette rencontre",
+    "no_match": "Aucun contact ne correspond à « {{search}} »",
     "send_invitation_one": "Envoyer l'invitation",
     "send_invitation_other": "Envoyer {{count}} invitations",
     "invitation_sent_one": "1 invitation envoyée",

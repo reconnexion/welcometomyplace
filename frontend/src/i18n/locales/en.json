@@ -178,6 +178,7 @@
     "view": "Allowed to join",
     "share": "Invite own contacts",
     "no_contact": "You must add contacts to your network to share this event with them",
+    "no_match": "No contact matches \"{{search}}\"",
     "send_invitation_one": "Send invitation",
     "send_invitation_other": "Send {{count}} invitations",
     "invitation_sent_one": "1 invitation sent",
