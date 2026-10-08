@@ -42,7 +42,7 @@
   },
   "pages": {
     "login": {
-      "choosePodProvider": "Choisissez l'hébergeur qui héberge votre compte ActivityPods",
+      "choosePodProvider": "Veuillez choisir un hébergeur de porte-données dans la liste ci-dessous. Toutes les données de l'application seront enregistrées sur votre porte-donnée.",
       "podProvidersNotLoaded": "Impossible de charger la liste des hébergeurs",
       "backToLogin": "Retour à la connexion"
     },
