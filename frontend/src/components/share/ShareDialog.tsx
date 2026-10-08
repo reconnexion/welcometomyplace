@@ -117,6 +117,8 @@ const ShareDialog = ({ event, open, onClose }: Props) => {
   return (
     <Modal
       title={t('actions.share')}
+      // Wider than Antd's 520px default, so that full usernames fit next to the two switches
+      width={640}
       open={open}
       onCancel={onClose}
       footer={[
