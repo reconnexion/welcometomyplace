@@ -25,6 +25,7 @@ import FormatShowPage from './pages/FormatShowPage';
 import FormatCreatePage from './pages/FormatCreatePage';
 import FormatEditPage from './pages/FormatEditPage';
 import SignupPage from './pages/SignupPage';
+import Banner from './Banner';
 
 const antdLocale = APP_LANG === 'fr' ? frFR : enUS;
 
@@ -32,6 +33,7 @@ const App = () => (
   <BrowserRouter>
     <ConfigProvider locale={antdLocale} theme={theme}>
       <AntdApp>
+        <Banner />
         <Refine
           authProvider={authProvider}
           dataProvider={{ default: dataProvider, appServer: formatDataProvider }}

@@ -81,6 +81,8 @@ services:
       MAINTENANCE: ${MAINTENANCE:-false}
       # Lets testers in during the maintenance, with ?preview=<code>
       MAINTENANCE_PREVIEW_CODE: ${MAINTENANCE_PREVIEW_CODE:-}
+      # Text of a closable banner shown on top of every page (empty: no banner)
+      BANNER_MESSAGE: ${BANNER_MESSAGE:-}
 
   wtmp-redis:
     image: redis:7-alpine
