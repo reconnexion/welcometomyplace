@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { App, Col, Grid, Row, Space, Spin } from 'antd';
 
-import PageLayout from '../components/layout/PageLayout';
 import { APP_BAR_HEIGHT } from '../components/layout/AppBar';
 import EventDetails from '../components/event/EventDetails';
 import EventAlert from '../components/event/EventAlert';
@@ -30,11 +29,9 @@ import type { EventRecord, FormatRecord } from '../types';
 const { useBreakpoint } = Grid;
 
 const Loading = () => (
-  <PageLayout>
-    <div style={{ padding: 48, textAlign: 'center' }}>
-      <Spin size="large" />
-    </div>
-  </PageLayout>
+  <div style={{ padding: 48, textAlign: 'center' }}>
+    <Spin size="large" />
+  </div>
 );
 
 /** Sends the visitor back to the homepage with a notice — used when the event can't be shown to
@@ -127,7 +124,7 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
   if (query.isLoading || !event) return <Loading />;
 
   return (
-    <PageLayout>
+    <>
       <div style={{ backgroundColor: '#fff', paddingTop: 24, paddingBottom: 8 }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
           <Row justify="space-between" align="top" gutter={[16, 16]}>
@@ -244,7 +241,7 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
           <JoinButton event={event} type="primary" block />
         </div>
       )}
-    </PageLayout>
+    </>
   );
 };
 

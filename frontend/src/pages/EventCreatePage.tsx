@@ -4,7 +4,6 @@ import { useForm } from '@refinedev/antd';
 import { useNavigate } from 'react-router';
 import { Button, Card, Form, Spin } from 'antd';
 
-import PageLayout from '../components/layout/PageLayout';
 import { APP_BAR_HEIGHT } from '../components/layout/AppBar';
 import EventForm from '../components/event/EventForm';
 import useWaitForPredicates from '../hooks/useWaitForPredicates';
@@ -30,7 +29,7 @@ const EventCreatePage = () => {
 
   if (creating) {
     return (
-      <PageLayout>
+      <>
         <div
           style={{
             minHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
@@ -44,26 +43,24 @@ const EventCreatePage = () => {
           <Spin size="large" />
           <p style={{ marginTop: 16 }}>{t('event.event_creating')}</p>
         </div>
-      </PageLayout>
+      </>
     );
   }
 
   return (
-    <PageLayout>
-      <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>
-        <h1 className="ap-font-display">{t('event.create')}</h1>
-        <Card>
-          <Form {...formProps} layout="vertical">
-            <EventForm form={form} />
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Button type="primary" {...saveButtonProps}>
-                {t('actions.save')}
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
-      </div>
-    </PageLayout>
+    <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>
+      <h1 className="ap-font-display">{t('event.create')}</h1>
+      <Card>
+        <Form {...formProps} layout="vertical">
+          <EventForm form={form} />
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Button type="primary" {...saveButtonProps}>
+              {t('actions.save')}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    </div>
   );
 };
 

@@ -5,7 +5,6 @@ import { Alert, Button, Col, Grid, Row, Spin, Tabs } from 'antd';
 import { HomeFilled } from '@ant-design/icons';
 import { Link } from 'react-router';
 
-import PageLayout from '../components/layout/PageLayout';
 import EventListItem from '../components/event/EventListItem';
 import ProfileCard from '../components/event/ProfileCard';
 import type { EventRecord } from '../types';
@@ -31,7 +30,7 @@ const EventListPage = () => {
   }, [result.data, tab]);
 
   return (
-    <PageLayout>
+    <>
       <div style={{ backgroundColor: '#fff', paddingTop: 32, paddingBottom: 32 }}>
         <div
           style={{
@@ -96,7 +95,7 @@ const EventListPage = () => {
           </Col>
         </Row>
       </div>
-    </PageLayout>
+    </>
   );
 };
 

@@ -63,10 +63,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<HomePage />} />
 
-            {/* Public, reachable anonymously — matches the old app's `disableAuthentication` list/show. */}
-            <Route path="/formats" element={<FormatListPage />} />
-            <Route path="/formats/:id" element={<FormatShowPage />} />
-
             {/*
               Not wrapped in <Authenticated>: AntdAuthPage handles every stage (provider picker,
               OAuth callback, app registration) from the URL's search params, so this single
@@ -81,42 +77,55 @@ const App = () => (
             {/* Kicks off the Solid-OIDC flow in signup mode, then hands back to /login's callback */}
             <Route path="/signup" element={<SignupPage />} />
 
-            {/*
-              Public on purpose, unlike every other event route: an event shared with a public
-              link is opened by people who have no account yet. EventShowPage itself sends a
-              visitor with neither a session nor a `?cap=` credential on to /login.
-            */}
-            <Route path="/events/:id" element={<EventShowPage />} />
             {/* Links of the old react-admin app, still in notifications and emails */}
             <Route path="/Event/:id/show" element={<LegacyEventRedirect />} />
             <Route path="/Event/:id" element={<LegacyEventRedirect />} />
 
+            {/* The layout is mounted once for all these pages, so that the app bar and the app status
+                checks of AntdBackgroundChecks aren't run again on every navigation. */}
             <Route
               element={
-                <Authenticated key="authenticated-routes" fallback={<CatchAllNavigate to="/login" />}>
+                <PageLayout>
                   <Outlet />
-                </Authenticated>
+                </PageLayout>
               }
             >
-              <Route path="/events" element={<EventListPage />} />
-              <Route path="/events/create" element={<EventCreatePage />} />
-              <Route path="/events/:id/edit" element={<EventEditPage />} />
-              {/* No button anywhere links here — matches the old app, where these routes existed
-                  but weren't linked from the UI either (Format isn't meant to be user-writable). */}
-              <Route path="/formats/create" element={<FormatCreatePage />} />
-              <Route path="/formats/:id/edit" element={<FormatEditPage />} />
-            </Route>
+              {/* Public, reachable anonymously — matches the old app's `disableAuthentication` list/show. */}
+              <Route path="/formats" element={<FormatListPage />} />
+              <Route path="/formats/:id" element={<FormatShowPage />} />
 
-            <Route
-              element={
-                <Authenticated key="catch-all">
-                  <PageLayout>
+              {/*
+                Public on purpose, unlike every other event route: an event shared with a public
+                link is opened by people who have no account yet. EventShowPage itself sends a
+                visitor with neither a session nor a `?cap=` credential on to /login.
+              */}
+              <Route path="/events/:id" element={<EventShowPage />} />
+
+              <Route
+                element={
+                  <Authenticated key="authenticated-routes" fallback={<CatchAllNavigate to="/login" />}>
                     <Outlet />
-                  </PageLayout>
-                </Authenticated>
-              }
-            >
-              <Route path="*" element={<ErrorComponent />} />
+                  </Authenticated>
+                }
+              >
+                <Route path="/events" element={<EventListPage />} />
+                <Route path="/events/create" element={<EventCreatePage />} />
+                <Route path="/events/:id/edit" element={<EventEditPage />} />
+                {/* No button anywhere links here — matches the old app, where these routes existed
+                    but weren't linked from the UI either (Format isn't meant to be user-writable). */}
+                <Route path="/formats/create" element={<FormatCreatePage />} />
+                <Route path="/formats/:id/edit" element={<FormatEditPage />} />
+              </Route>
+
+              <Route
+                element={
+                  <Authenticated key="catch-all">
+                    <Outlet />
+                  </Authenticated>
+                }
+              >
+                <Route path="*" element={<ErrorComponent />} />
+              </Route>
             </Route>
           </Routes>
           <UnsavedChangesNotifier />
