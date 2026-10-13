@@ -7,7 +7,7 @@ import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 import useOutbox from '../../hooks/useOutbox';
 import useActivityCollection from '../../hooks/useActivityCollection';
 import { authProvider } from '../../providers';
-import { isEventFinished } from '../../utils/eventStatus';
+import { isEventFinished, isEventStarted } from '../../utils/eventStatus';
 import type { EventRecord, Identity } from '../../types';
 
 type Props = ButtonProps & {
@@ -36,7 +36,8 @@ const InterestedButton = ({ event, ...buttonProps }: Props) => {
   const isOrganizer = event['dc:creator'] === identity?.id;
   const isInvited = announcesUris.includes(identity?.id ?? '');
   const hasJoined = attendees.includes(identity?.id ?? '');
-  const isFinished = isEventFinished(event);
+  // "Interested but not available" makes no sense anymore once the event has started
+  const hasStarted = isEventStarted(event) || isEventFinished(event);
 
   const waitForLikeUpdate = async (expectInterested: boolean) => {
     for (let attempt = 0; attempt < 10; attempt++) {
@@ -85,8 +86,8 @@ const InterestedButton = ({ event, ...buttonProps }: Props) => {
     return null;
   }
 
-  // For regular users: show button, no count. Only show if invited, not joined, and not finished
-  if (!session || !isInvited || hasJoined || isFinished || interestedLoading || announcesLoading) {
+  // For regular users: show button, no count. Only show if invited, not joined, and not started
+  if (!session || !isInvited || hasJoined || hasStarted || interestedLoading || announcesLoading) {
     return null;
   }
 

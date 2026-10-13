@@ -9,6 +9,8 @@ const isPast = (date?: string) => !!date && new Date(date).getTime() < Date.now(
 export const isEventFinished = (event: EventRecord) =>
   isPast(event.endTime) || arrayOf(event['apods:hasStatus']).includes('apods:Finished');
 
+export const isEventStarted = (event: EventRecord) => isPast(event.startTime);
+
 /** Closed = the organizer closed registrations (max attendees reached, or `apods:closingTime`
  *  past). Same reasoning as above for the closing time. */
 export const isEventClosed = (event: EventRecord) =>

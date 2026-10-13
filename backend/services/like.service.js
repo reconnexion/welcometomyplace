@@ -1,4 +1,3 @@
-const { MoleculerError } = require('moleculer').Errors;
 const { ACTIVITY_TYPES, OBJECT_TYPES } = require('@semapps/activitypub');
 const { PodActivitiesHandlerMixin } = require('@activitypods/app');
 
@@ -17,11 +16,12 @@ module.exports = {
         const event = activity.object;
         const organizerUri = event['dc:creator'];
 
-        // The status is switched by a timer, which may not have run yet: check the end date too.
-        // Not a throw, like in registration.service: an exception in a handler takes the backend down.
-        const isPastEnd = event.endTime && new Date(event.endTime).getTime() < Date.now();
-        if (isPastEnd || (await ctx.call('status.isFinished', { event }))) {
-          this.logger.warn(`Ignoring Like of ${activity.actor} on ${event.id}: the event is finished`);
+        // "Interested but not available" makes no sense anymore once the event has started.
+        // Not a throw: `pod-activities-watcher.processWebhook` doesn't catch what a handler throws,
+        // so throwing here takes the whole app backend down.
+        const hasStarted = event.startTime && new Date(event.startTime).getTime() < Date.now();
+        if (hasStarted || (await ctx.call('status.isFinished', { event }))) {
+          this.logger.warn(`Ignoring Like of ${activity.actor} on ${event.id}: the event has started`);
           return;
         }
 
@@ -34,7 +34,8 @@ module.exports = {
           : [];
 
         if (!announces.includes(activity.actor)) {
-          throw new MoleculerError('You must be invited to express interest', 403, 'FORBIDDEN');
+          this.logger.warn(`Ignoring Like of ${activity.actor} on ${event.id}: not invited`);
+          return;
         }
 
         // SemApps handles adding to as:likes automatically, so we just send a notification
