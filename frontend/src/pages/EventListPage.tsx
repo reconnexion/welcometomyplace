@@ -39,8 +39,8 @@ const EventListPage = () => {
             padding: '0 24px',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            flexWrap: 'wrap',
+            // On one line, also on mobile: the title shrinks (see .ap-page-title) and the button is shortened
+            alignItems: 'center',
             gap: 12
           }}
         >

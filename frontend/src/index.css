@@ -97,7 +97,7 @@ h4,
 .ap-page-title {
   margin: 0;
   line-height: 1;
-  font-size: clamp(32px, 5vw, 48px);
+  font-size: clamp(26px, 5vw, 48px);
   color: #000;
 }
 
