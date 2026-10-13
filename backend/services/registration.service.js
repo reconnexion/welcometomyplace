@@ -1,5 +1,4 @@
 const urlJoin = require('url-join');
-const { MoleculerError } = require('moleculer').Errors;
 const { ACTIVITY_TYPES, OBJECT_TYPES } = require('@semapps/activitypub');
 const { PodActivitiesHandlerMixin } = require('@activitypods/app');
 const { arrayOf } = require('@semapps/ldp');
@@ -77,10 +76,13 @@ module.exports = {
       async onReceive(ctx, activity, actorUri) {
         const event = activity.object;
 
+        // Not a throw: see below
         if (await ctx.call('status.isFinished', { event })) {
-          throw new MoleculerError('This event is finished', 403, 'FORBIDDEN');
+          this.logger.warn(`Ignoring Join of ${activity.actor} on ${event.id}: the event is finished`);
+          return;
         } else if (await ctx.call('status.isClosed', { event })) {
-          throw new MoleculerError('Registrations for this event are closed', 403, 'FORBIDDEN');
+          this.logger.warn(`Ignoring Join of ${activity.actor} on ${event.id}: registrations are closed`);
+          return;
         }
 
         const organizerUri = event['dc:creator'];
