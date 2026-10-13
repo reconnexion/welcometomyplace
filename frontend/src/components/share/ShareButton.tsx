@@ -10,6 +10,8 @@ import type { EventRecord, Identity } from '../../types';
 
 type Props = {
   event: EventRecord;
+  /** Just the icon, for the event header on mobile */
+  iconOnly?: boolean;
 };
 
 /** Only rendered for the organizer, or someone the organizer delegated share rights to.
@@ -22,7 +24,7 @@ type Props = {
  *  one has been granted share rights yet, so `apods:announcers` doesn't exist on the event at
  *  all) looks identical to "ran fine, found nothing", which is why the creator is always shown
  *  regardless of this collection's state. */
-const ShareButton = ({ event }: Props) => {
+const ShareButton = ({ event, iconOnly }: Props) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { data: identity } = useGetIdentity<Identity>();
@@ -34,9 +36,19 @@ const ShareButton = ({ event }: Props) => {
 
   return (
     <>
-      <Button type="text" className="ap-btn-text-action" icon={<ShareAltOutlined />} onClick={() => setOpen(true)}>
-        {t('actions.share')}
-      </Button>
+      {iconOnly ? (
+        <Button
+          type="text"
+          className="ap-btn-text-action"
+          icon={<ShareAltOutlined style={{ fontSize: 22 }} />}
+          aria-label={t('actions.share')}
+          onClick={() => setOpen(true)}
+        />
+      ) : (
+        <Button type="text" className="ap-btn-text-action" icon={<ShareAltOutlined />} onClick={() => setOpen(true)}>
+          {t('actions.share')}
+        </Button>
+      )}
       {open && <ShareDialog event={event} open={open} onClose={() => setOpen(false)} />}
     </>
   );

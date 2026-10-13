@@ -135,19 +135,26 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
                   {format['rdfs:label']}
                 </div>
               )}
-              <h1 className="ap-font-display" style={{ margin: 0, fontSize: 'clamp(28px, 4vw, 40px)', lineHeight: 1.15 }}>
-                {event.name}
-              </h1>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+                <h1 className="ap-font-display" style={{ margin: 0, fontSize: 'clamp(28px, 4vw, 40px)', lineHeight: 1.15 }}>
+                  {event.name}
+                </h1>
+                {/* On mobile, sharing is just an icon at the top right, instead of a row of its own */}
+                {isMobile && <ShareButton event={event} iconOnly />}
+              </div>
             </Col>
-            <Col xs={24} sm={6}>
-              <Space
-                style={{ width: '100%', justifyContent: isMobile ? 'flex-start' : 'flex-end' }}
-              >
-                <ShareButton event={event} />
-                <CloneEventButton event={event} />
-                <EditButton creatorUri={event['dc:creator']} to={`/events/${encodeURIComponent(event.id)}/edit`} />
-              </Space>
-            </Col>
+            {/* Cloning and editing are only offered to the organizer */}
+            {(!isMobile || event['dc:creator'] === identity?.id) && (
+              <Col xs={24} sm={6}>
+                <Space
+                  style={{ width: '100%', justifyContent: isMobile ? 'flex-start' : 'flex-end' }}
+                >
+                  {!isMobile && <ShareButton event={event} />}
+                  <CloneEventButton event={event} />
+                  <EditButton creatorUri={event['dc:creator']} to={`/events/${encodeURIComponent(event.id)}/edit`} />
+                </Space>
+              </Col>
+            )}
           </Row>
           <div style={{ padding: '16px 0' }}>
             <EventDetails event={event} orientation={isMobile ? 'vertical' : 'horizontal'} />
