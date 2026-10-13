@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetIdentity, useInvalidate } from '@refinedev/core';
-import { App, Button, Divider, Modal } from 'antd';
+import { App, Button, Divider, Grid, Modal } from 'antd';
 
 import ContactsShareList from './ContactsShareList';
 import GeneralAccess from './GeneralAccess';
@@ -20,6 +20,7 @@ const ShareDialog = ({ event, open, onClose }: Props) => {
   const { message: toast } = App.useApp();
   const { data: identity } = useGetIdentity<Identity>();
   const outbox = useOutbox();
+  const isMobile = !Grid.useBreakpoint().sm;
 
   const creatorUri = event['dc:creator'];
   const isCreator = creatorUri === identity?.id;
@@ -118,7 +119,10 @@ const ShareDialog = ({ event, open, onClose }: Props) => {
     <Modal
       title={t('actions.share')}
       // Wider than Antd's 520px default, so that full usernames fit next to the two switches
-      width={640}
+      width={isMobile ? 'calc(100vw - 16px)' : 640}
+      // Thinner margins and padding on mobile, to leave more room to the contacts
+      style={isMobile ? { top: 8, maxWidth: 'calc(100vw - 16px)' } : undefined}
+      styles={isMobile ? { content: { padding: '16px 12px' } } : undefined}
       open={open}
       onCancel={onClose}
       footer={[
