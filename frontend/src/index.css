@@ -78,7 +78,14 @@ h4,
   align-items: center;
   gap: 8px;
   font-size: 28px;
+  white-space: nowrap;
   color: #fff !important;
+}
+
+@media (max-width: 380px) {
+  .ap-appbar-title {
+    font-size: 22px;
+  }
 }
 
 .ap-heading-accent {

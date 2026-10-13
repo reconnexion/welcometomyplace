@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useGetIdentity } from '@refinedev/core';
-import { Avatar, Button, Dropdown, Space } from 'antd';
+import { Avatar, Button, Dropdown, Grid, Space } from 'antd';
 import { AppstoreOutlined, DatabaseOutlined, LogoutOutlined, SettingOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router';
 
@@ -12,6 +12,7 @@ import type { Identity } from '../../types';
 const UserMenu = () => {
   const { t } = useTranslation();
   const { data: identity, isLoading } = useGetIdentity<Identity>();
+  const screens = Grid.useBreakpoint();
   // The Pod provider's own frontend (network/apps/data/settings pages all live there, not in
   // this app) is discovered via the standard nodeinfo protocol against the WebID's own host.
   const { data: nodeinfo } = useNodeinfo(identity?.id ? new URL(identity.id).host : undefined);
@@ -93,7 +94,8 @@ const UserMenu = () => {
     >
       <Space style={{ cursor: 'pointer', color: 'inherit' }}>
         <Avatar src={identity.avatar} icon={!identity.avatar && <UserOutlined />} />
-        <span className="ap-usermenu-name">{identity.name}</span>
+        {/* Only the avatar on mobile, so that the app name fits on one line */}
+        {screens.md && <span className="ap-usermenu-name">{identity.name}</span>}
       </Space>
     </Dropdown>
   );
