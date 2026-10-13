@@ -292,3 +292,15 @@ h4,
 .ap-contact-meta .ant-list-item-meta-description {
   line-height: 1.3;
 }
+
+/* A long handle is cut with an ellipsis rather than wrapped (min-width lets the flex items shrink) */
+.ap-contact-meta.ant-list-item-meta,
+.ap-contact-meta .ant-list-item-meta-content {
+  min-width: 0;
+}
+
+.ap-contact-meta .ant-list-item-meta-description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
