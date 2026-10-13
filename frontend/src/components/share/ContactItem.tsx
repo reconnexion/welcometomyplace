@@ -39,7 +39,8 @@ const ContactItem = ({ profile, invitation, isCreator, onChange }: Props) => {
   return (
     <List.Item style={{ paddingLeft: 0, paddingRight: 0, gap: 12, flexWrap: 'wrap' }}>
       <List.Item.Meta
-        avatar={<Avatar src={profile['vcard:photo']} icon={!profile['vcard:photo'] && <UserOutlined />} />}
+        className="ap-contact-meta"
+        avatar={<Avatar size={44} src={profile['vcard:photo']} icon={!profile['vcard:photo'] && <UserOutlined />} />}
         title={profile['vcard:given-name']}
         description={formatUsername(profile.describes)}
       />

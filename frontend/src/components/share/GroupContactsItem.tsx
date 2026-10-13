@@ -54,7 +54,8 @@ const GroupContactsItem = ({ group, invitations, isCreator, onChange }: Props) =
   return (
     <List.Item style={{ paddingLeft: 0, paddingRight: 0, gap: 12, flexWrap: 'wrap' }}>
       <List.Item.Meta
-        avatar={<Avatar src={group['vcard:photo']} icon={!group['vcard:photo'] && <TeamOutlined />} />}
+        className="ap-contact-meta"
+        avatar={<Avatar size={44} src={group['vcard:photo']} icon={!group['vcard:photo'] && <TeamOutlined />} />}
         title={group['vcard:label']}
       />
       <div style={{ display: 'flex', gap: 24 }}>

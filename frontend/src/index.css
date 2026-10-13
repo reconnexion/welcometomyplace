@@ -277,3 +277,18 @@ h4,
   font-weight: 700;
   line-height: 20px;
 }
+
+/* Contacts in the share dialog: bigger avatar, centered next to the name and the handle, which
+   sit closer together than in Antd's default List.Item.Meta. */
+.ap-contact-meta.ant-list-item-meta {
+  align-items: center;
+}
+
+.ap-contact-meta .ant-list-item-meta-title {
+  margin-bottom: 0 !important;
+  line-height: 1.3;
+}
+
+.ap-contact-meta .ant-list-item-meta-description {
+  line-height: 1.3;
+}
