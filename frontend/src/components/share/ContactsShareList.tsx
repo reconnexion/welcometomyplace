@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type UIEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetIdentity, useInfiniteList, useList } from '@refinedev/core';
 import { Alert, Input, List, Spin } from 'antd';
@@ -30,7 +30,7 @@ const ContactsShareList = ({ invitations, organizerUri, isCreator, onChange }: P
 
   const { result: profilesResult, query: profilesQuery } = useInfiniteList<ProfileRecord>({
     resource: 'profile',
-    pagination: { pageSize: 20, mode: 'server' },
+    pagination: { pageSize: 50, mode: 'server' },
     sorters: [{ field: 'vcard:given-name', order: 'asc' }],
     filters: debouncedSearch ? [{ field: 'vcard:given-name', operator: 'contains', value: debouncedSearch }] : []
   });
@@ -59,13 +59,17 @@ const ContactsShareList = ({ invitations, organizerUri, isCreator, onChange }: P
 
   const isLoading = profilesQuery.isLoading || groupsQuery.isLoading;
 
-  // Load the next page of contacts when the list is scrolled near its end
-  const onScroll = (e: UIEvent<HTMLDivElement>) => {
-    const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
-    if (scrollTop + clientHeight >= scrollHeight - 100 && profilesResult.hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  };
+  // Load the next page before the end of the list is reached: as soon as less than one visible
+  // height of contacts is left below, so that scrolling doesn't stop on a spinner
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const loadMoreIfNeeded = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el || !profilesResult.hasNextPage || isFetchingNextPage) return;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - el.clientHeight) fetchNextPage();
+  }, [profilesResult.hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // Also check when a page lands, in case the list was already scrolled that far while it loaded
+  useEffect(loadMoreIfNeeded, [loadMoreIfNeeded, profilesResult.data]);
 
   return (
     <div>
@@ -78,7 +82,11 @@ const ContactsShareList = ({ invitations, organizerUri, isCreator, onChange }: P
       />
       {/* Only the list scrolls, so the search field and the dialog's buttons stay in view
           even with hundreds of contacts. */}
-      <div style={{ maxHeight: 'min(400px, 50vh)', overflowY: 'auto' }} onScroll={onScroll}>
+      <div
+        ref={scrollRef}
+        style={{ maxHeight: 'min(400px, 50vh)', overflowY: 'auto' }}
+        onScroll={loadMoreIfNeeded}
+      >
         <List
           dataSource={[
             ...groups.map(g => ({ type: 'group' as const, record: g })),
