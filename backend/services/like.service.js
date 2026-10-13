@@ -17,6 +17,14 @@ module.exports = {
         const event = activity.object;
         const organizerUri = event['dc:creator'];
 
+        // The status is switched by a timer, which may not have run yet: check the end date too.
+        // Not a throw, like in registration.service: an exception in a handler takes the backend down.
+        const isPastEnd = event.endTime && new Date(event.endTime).getTime() < Date.now();
+        if (isPastEnd || (await ctx.call('status.isFinished', { event }))) {
+          this.logger.warn(`Ignoring Like of ${activity.actor} on ${event.id}: the event is finished`);
+          return;
+        }
+
         // Verify the actor is invited to the event (in apods:announces)
         const announces = event['apods:announces']
           ? await ctx.call('pod-collections.getItems', {
