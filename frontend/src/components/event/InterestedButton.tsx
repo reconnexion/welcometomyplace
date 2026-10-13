@@ -12,11 +12,13 @@ import type { EventRecord, Identity } from '../../types';
 
 type Props = ButtonProps & {
   event: EventRecord;
+  /** Just "Interested", for the mobile bottom bar where it sits next to the join button */
+  short?: boolean;
 };
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const InterestedButton = ({ event, ...buttonProps }: Props) => {
+const InterestedButton = ({ event, short, ...buttonProps }: Props) => {
   const { t } = useTranslation();
   const { message } = App.useApp();
   const { data: identity } = useGetIdentity<Identity>();
@@ -91,7 +93,9 @@ const InterestedButton = ({ event, ...buttonProps }: Props) => {
     return null;
   }
 
-  const buttonLabel = isInterested ? t('event.not_interested') : t('event.interested');
+  const buttonLabel = isInterested
+    ? t('event.not_interested')
+    : t(short ? 'event.interested_short' : 'event.interested');
 
   return (
     <Button

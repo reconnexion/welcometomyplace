@@ -169,6 +169,7 @@
     "not_invited": "Vous n'avez pas été invité à cette rencontre",
     "mission": "Favoriser un vivre ensemble basé sur l'accueil, la confiance et l'entraide",
     "interested": "Intéressé(e) mais pas dispo",
+    "interested_short": "Intéressé(e)",
     "not_interested": "Plus intéressé(e)",
     "interested_count_one": "1 intéressé(e)",
     "interested_count_other": "{{count}} intéressé(e)s",

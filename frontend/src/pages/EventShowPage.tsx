@@ -238,7 +238,13 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
             boxShadow: '0 -2px 8px rgba(0,0,0,0.15)'
           }}
         >
-          <JoinButton event={event} type="primary" block />
+          <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <JoinButton event={event} type="primary" block />
+            </div>
+            {/* Not the orange text style of the desktop card, which would vanish on this orange bar */}
+            <InterestedButton event={event} short type="default" className="" />
+          </div>
         </div>
       )}
     </>

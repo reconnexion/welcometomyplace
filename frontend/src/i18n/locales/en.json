@@ -168,6 +168,7 @@
     "backed_by": "Backed by",
     "not_invited": "You have not been invited to this event",
     "interested": "Interested but not available",
+    "interested_short": "Interested",
     "not_interested": "No longer interested",
     "interested_count_one": "1 interested",
     "interested_count_other": "{{count}} interested",
