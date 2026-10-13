@@ -39,7 +39,8 @@ const HostLocationMap = ({ locationUri }: Props) => {
         <MapContainer
           center={[lat, lng]}
           zoom={15}
-          style={{ height: screens.sm ? 400 : 250, width: '100%', borderRadius: 8 }}
+          // Keeps Leaflet's z-indexes (up to 1000) inside the map, so it doesn't cover the fixed app bars
+          style={{ height: screens.sm ? 400 : 250, width: '100%', borderRadius: 8, isolation: 'isolate' }}
           scrollWheelZoom={false}
         >
           <TileLayer
