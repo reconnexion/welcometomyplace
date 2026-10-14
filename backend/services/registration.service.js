@@ -141,8 +141,8 @@ module.exports = {
         await ctx.call('pod-notifications.send', {
           template: {
             title: {
-              en: `{{emitterProfile.vcard:given-name}} is attending your event "{{activity.object.name}}"`,
-              fr: `{{emitterProfile.vcard:given-name}} participe à votre rencontre "{{activity.object.name}}"`
+              en: `{{{emitterProfile.vcard:given-name}}} is attending your event "{{{activity.object.name}}}"`,
+              fr: `{{{emitterProfile.vcard:given-name}}} participe à votre rencontre "{{{activity.object.name}}}"`
             },
             actions: [
               {
@@ -196,8 +196,8 @@ module.exports = {
         await ctx.call('pod-notifications.send', {
           template: {
             title: {
-              en: `{{emitterProfile.vcard:given-name}} is not attending anymore your event "{{activity.object.name}}"`,
-              fr: `{{emitterProfile.vcard:given-name}} ne participe plus à votre rencontre "{{activity.object.name}}"`
+              en: `{{{emitterProfile.vcard:given-name}}} is not attending anymore your event "{{{activity.object.name}}}"`,
+              fr: `{{{emitterProfile.vcard:given-name}}} ne participe plus à votre rencontre "{{{activity.object.name}}}"`
             },
             actions: [
               {

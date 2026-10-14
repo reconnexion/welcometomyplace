@@ -42,8 +42,8 @@ module.exports = {
         await ctx.call('pod-notifications.send', {
           template: {
             title: {
-              en: `{{emitterProfile.vcard:given-name}} is interested in your event "{{activity.object.name}}"`,
-              fr: `{{emitterProfile.vcard:given-name}} s'intéresse à votre rencontre "{{activity.object.name}}"`
+              en: `{{{emitterProfile.vcard:given-name}}} is interested in your event "{{{activity.object.name}}}"`,
+              fr: `{{{emitterProfile.vcard:given-name}}} s'intéresse à votre rencontre "{{{activity.object.name}}}"`
             },
             actions: [
               {

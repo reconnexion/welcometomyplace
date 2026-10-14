@@ -57,8 +57,8 @@ module.exports = {
                   fr: `Ajoutez {{{profile.vcard:given-name}}} à votre réseau`
                 },
                 content: {
-                  en: `Following the event {{event.name}}, you may add {{profile.vcard:given-name}} to your network.`,
-                  fr: `Suite à la rencontre {{event.name}}, vous avez la possibilité d'ajouter {{profile.vcard:given-name}} à vos contacts.`
+                  en: `Following the event {{{event.name}}}, you may add {{{profile.vcard:given-name}}} to your network.`,
+                  fr: `Suite à la rencontre {{{event.name}}}, vous avez la possibilité d'ajouter {{{profile.vcard:given-name}}} à vos contacts.`
                 }
               },
               templateParams: {
