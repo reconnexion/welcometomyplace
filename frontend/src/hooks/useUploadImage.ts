@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { fetchJson, resolveContainerUri } from '@activitypods/refine-providers/utils';
 
 import { authProvider } from '../providers';
+import { compressImage } from '../utils/compressImage';
 
 /** Upload a raw file to the user's Pod, returning its URL.
  *
@@ -13,7 +14,7 @@ import { authProvider } from '../providers';
  * which for `files.ts` is the conventional `semapps:File` class — so that's what we look up by,
  * matching how `@semapps/semantic-data-provider`'s own `uploadFile` resolves it. */
 const useUploadImage = () => {
-  return useCallback(async (file: File): Promise<string> => {
+  return useCallback(async (rawFile: File): Promise<string> => {
     const session = authProvider.getSession();
     if (!session) throw new Error('Not authenticated');
 
@@ -25,6 +26,7 @@ const useUploadImage = () => {
       ['https://www.w3.org/ns/activitystreams']
     );
 
+    const file = await compressImage(rawFile);
     const { headers } = await fetchJson(
       containerUri,
       { method: 'POST', body: file, headers: { 'Content-Type': file.type } },
