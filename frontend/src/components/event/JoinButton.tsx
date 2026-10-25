@@ -8,7 +8,6 @@ import useOutbox from '../../hooks/useOutbox';
 import useActivityCollection from '../../hooks/useActivityCollection';
 import useCapability from '../../hooks/useCapability';
 import { authProvider } from '../../providers';
-import { createPresentation } from '../../utils/capability';
 import { isEventClosed, isEventFinished } from '../../utils/eventStatus';
 import type { EventRecord, Identity } from '../../types';
 
@@ -24,21 +23,17 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
  *  same react-query cache key, so refetching it here also updates that grid.
  *
  *  A visitor who arrived through a public event link (`?cap=`) is not in `apods:announces`, so
- *  their `Join` carries the credential from that link as proof they may register anyway. It goes
- *  along twice, on purpose:
- *  - `capability`, a presentation signed against a challenge from the organizer's Pod, which that
- *    Pod verifies on receipt (proof the sender really holds the credential);
- *  - `instrument`, the credential's plain URI, because `capability` is not an ActivityStreams
- *    term and so does not survive being stored in the Pod's triplestore — and the app backend,
- *    which is what actually decides whether to accept the registration, reads the activity back
- *    from the Pod rather than seeing the original request. */
+ *  their `Join` carries the URI of that link's credential on `instrument`, which the app backend
+ *  checks against the organizer's Pod. No signed presentation is attached on `capability`: the
+ *  organizer's Pod fails to store an activity embedding one (its proof is a named graph), so the
+ *  `Join` would never reach the app backend. */
 const JoinButton = ({ event, ...buttonProps }: Props) => {
   const { t } = useTranslation();
   const { message } = App.useApp();
   const { data: identity } = useGetIdentity<Identity>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { capability, capabilityUri } = useCapability();
+  const { capabilityUri } = useCapability();
   const outbox = useOutbox();
   const { items: attendees, isLoading: attendeesLoading, refetch } = useActivityCollection(event['apods:attendees']);
   const [pending, setPending] = useState(false);
@@ -69,16 +64,7 @@ const JoinButton = ({ event, ...buttonProps }: Props) => {
   const post = async (type: 'Join' | 'Leave') => {
     setPending(true);
     try {
-      let credentials = {};
-      if (type === 'Join' && capability && capabilityUri && session) {
-        const presentation = await createPresentation({
-          token: session.token,
-          holder: session.webId,
-          verifier: event['dc:creator'],
-          verifiableCredential: capability
-        });
-        credentials = { capability: presentation, instrument: capabilityUri };
-      }
+      const credentials = type === 'Join' && capabilityUri ? { instrument: capabilityUri } : {};
 
       await outbox.post({
         type,

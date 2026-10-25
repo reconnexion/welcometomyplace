@@ -12,15 +12,10 @@ module.exports = {
      * strength of the credential behind a public event link (see the share dialog's "general
      * access" setting, and `frontend/src/utils/capability.ts` for how the credential is minted).
      *
-     * The credential's URI travels on the activity's `instrument` — not on `capability`, which
-     * holds the signed presentation the organizer's Pod verifies on receipt but which, not being
-     * an ActivityStreams term, does not survive being stored in the triplestore and so is gone by
-     * the time we read the activity back from the Pod.
-     *
-     * That presentation check happens on the Pod and its failures are only logged, so it cannot
-     * be relied on here. What makes this safe on its own is re-fetching the credential from the
-     * organizer's own Pod: possession of an unguessable, still-existing credential URI *is* the
-     * authorization, exactly as for a "anyone with the link" share.
+     * The credential's URI travels on the activity's `instrument`. No signed presentation comes
+     * with it: what makes this safe is re-fetching the credential from the organizer's own Pod —
+     * possession of an unguessable, still-existing credential URI *is* the authorization, exactly
+     * as for a "anyone with the link" share.
      */
     async isAllowedByPublicLink(ctx, activity, event, organizerUri) {
       const capabilityUri = activity.instrument?.id || activity.instrument;

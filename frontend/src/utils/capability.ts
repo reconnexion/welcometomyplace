@@ -212,46 +212,6 @@ export const findEventLinkCapability = async ({
 export const revokeCapability = (capabilityUri: string, token: string) =>
   fetchJson(capabilityUri, { method: 'DELETE' }, token);
 
-/**
- * Build a presentation of `verifiableCredential` signed by `holder`, answering a challenge from
- * `verifier` — the proof, checked by the recipient's Pod, that whoever sends the activity really
- * holds the credential. Ported from the ActivityPods frontend's `createPresentation`.
- */
-export const createPresentation = async ({
-  token,
-  holder,
-  verifier,
-  verifiableCredential
-}: {
-  token: string;
-  holder: string;
-  verifier: string;
-  verifiableCredential: Capability;
-}) => {
-  // The challenges route is deliberately unauthenticated (see `VCApiService`)
-  const {
-    json: { challenge }
-  } = await fetchJson(vcApiUri(verifier, 'challenges'), { method: 'POST' });
-
-  const { json: presentation } = await fetchJson(
-    vcApiUri(holder, 'presentations/'),
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        presentation: {
-          '@context': credentialContext,
-          type: 'VerifiablePresentation',
-          verifiableCredential: [verifiableCredential]
-        },
-        options: { challenge, persist: false }
-      })
-    },
-    token
-  );
-
-  return presentation;
-};
-
 /** The shareable link: the ordinary event page, plus the credential that opens it. */
 export const eventLinkUrl = (eventUri: string, capabilityUri: string) =>
   `${window.location.origin}/events/${encodeURIComponent(eventUri)}?cap=${encodeURIComponent(capabilityUri)}`;
