@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetIdentity } from '@refinedev/core';
 import { Avatar, Button, Dropdown, Grid, Space } from 'antd';
 import { AppstoreOutlined, DatabaseOutlined, LogoutOutlined, SettingOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 import useNodeinfo from '../../hooks/useNodeinfo';
 import urlJoin from '../../utils/urlJoin';
@@ -13,6 +13,7 @@ const UserMenu = () => {
   const { t } = useTranslation();
   const { data: identity, isLoading } = useGetIdentity<Identity>();
   const screens = Grid.useBreakpoint();
+  const location = useLocation();
   // The Pod provider's own frontend (network/apps/data/settings pages all live there, not in
   // this app) is discovered via the standard nodeinfo protocol against the WebID's own host.
   const { data: nodeinfo } = useNodeinfo(identity?.id ? new URL(identity.id).host : undefined);
@@ -20,8 +21,11 @@ const UserMenu = () => {
   if (isLoading) return null;
 
   if (!identity?.id) {
+    // Come back to the current page once logged in: a public event link can't be found again otherwise
+    const here = location.pathname + location.search;
+    const loginLink = location.pathname === '/' ? '/login' : `/login?redirect=${encodeURIComponent(here)}`;
     return (
-      <Link to="/login">
+      <Link to={loginLink}>
         <Button type="primary">{t('actions.login')}</Button>
       </Link>
     );

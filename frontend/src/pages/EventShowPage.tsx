@@ -24,6 +24,7 @@ import useCapability from '../hooks/useCapability';
 import useCapabilityImage from '../hooks/useCapabilityImage';
 import { authProvider } from '../providers';
 import type { Capability } from '../utils/capability';
+import { forgetEventLinks, rememberEventLink } from '../utils/eventLinks';
 import type { EventRecord, FormatRecord } from '../types';
 
 const { useBreakpoint } = Grid;
@@ -79,10 +80,12 @@ const EventShowPage = () => {
 
   if (!ready || (linkInvalid && !session)) return <Loading />;
 
-  return <EventShowContent capability={capability} linkInvalid={linkInvalid} />;
+  return <EventShowContent capability={capability} capabilityUri={capabilityUri} linkInvalid={linkInvalid} />;
 };
 
-const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability; linkInvalid: boolean }) => {
+type ContentProps = { capability?: Capability; capabilityUri?: string; linkInvalid: boolean };
+
+const EventShowContent = ({ capability, capabilityUri, linkInvalid }: ContentProps) => {
   const { t } = useTranslation();
   const { id } = useParsed();
   const screens = useBreakpoint();
@@ -102,6 +105,13 @@ const EventShowContent = ({ capability, linkInvalid }: { capability?: Capability
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [linkInvalid, query.isError]);
+
+  // So that the event can be found again from the events list (see useLinkedEvents)
+  useEffect(() => {
+    if (linkInvalid) forgetEventLinks([`${id}`]);
+    else if (event?.id && capability && capabilityUri) rememberEventLink(event.id, capabilityUri);
+  }, [linkInvalid, event?.id, capability, capabilityUri, id]);
+
   const { result: format } = useOne<FormatRecord>({
     resource: 'format',
     id: event?.['apods:hasFormat'],

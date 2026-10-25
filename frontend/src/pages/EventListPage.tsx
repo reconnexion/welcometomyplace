@@ -7,8 +7,11 @@ import { Link } from 'react-router';
 
 import EventListItem from '../components/event/EventListItem';
 import ProfileCard from '../components/event/ProfileCard';
+import useLinkedEvents, { type LinkedEvent } from '../hooks/useLinkedEvents';
 import type { EventRecord } from '../types';
 import { isEventFinished } from '../utils/eventStatus';
+
+type ListItem = Pick<LinkedEvent, 'event'> & Partial<LinkedEvent>;
 
 const EventListPage = () => {
   const { t } = useTranslation();
@@ -23,11 +26,18 @@ const EventListPage = () => {
     pagination: { mode: 'off' }
   });
 
-  const events = useMemo(() => {
-    const filtered = result.data.filter(event => isEventFinished(event) === (tab === 'finished'));
-    const time = (event: EventRecord) => new Date(event.startTime).getTime();
+  const ownEventIds = useMemo(
+    () => (query.isSuccess ? result.data.map(event => event.id) : undefined),
+    [query.isSuccess, result.data]
+  );
+  const linkedEvents = useLinkedEvents(ownEventIds);
+
+  const items = useMemo(() => {
+    const all: ListItem[] = [...result.data.map(event => ({ event })), ...linkedEvents];
+    const filtered = all.filter(({ event }) => isEventFinished(event) === (tab === 'finished'));
+    const time = ({ event }: ListItem) => new Date(event.startTime).getTime();
     return filtered.sort((a, b) => (tab === 'coming' ? time(a) - time(b) : time(b) - time(a)));
-  }, [result.data, tab]);
+  }, [result.data, linkedEvents, tab]);
 
   return (
     <>
@@ -87,7 +97,9 @@ const EventListPage = () => {
             {query.isLoading ? (
               <Spin />
             ) : (
-              events.map((event: EventRecord) => <EventListItem key={event.id} event={event} />)
+              items.map(({ event, capability, capabilityUri }) => (
+                <EventListItem key={event.id} event={event} capability={capability} capabilityUri={capabilityUri} />
+              ))
             )}
           </Col>
           <Col xs={0} md={8} lg={7}>

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchJson } from '@activitypods/refine-providers/utils';
 
 import { authProvider } from '../providers';
-import { getCurrentCapabilityToken } from '../utils/capability';
+import { capabilityTokenFor, getCurrentCapabilityToken } from '../utils/capability';
 
 export type ActorProfile = {
   'vcard:given-name'?: string;
@@ -26,7 +26,7 @@ const useActorProfile = (actorUri?: string) => {
     queryFn: async () => {
       const { json: actor } = await fetchJson(actorUri!, {}, token);
       if (!actor.url) return null;
-      const { json: profile } = await fetchJson(actor.url, {}, token);
+      const { json: profile } = await fetchJson(actor.url, {}, capabilityTokenFor(actor.url) ?? token);
       return profile as ActorProfile;
     },
     enabled: !!actorUri,

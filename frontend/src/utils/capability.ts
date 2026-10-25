@@ -89,6 +89,23 @@ export const getCurrentCapability = (uri?: string) =>
 export const getCurrentCapabilityToken = () =>
   currentCapability ? capabilityToken(currentCapability.capability) : undefined;
 
+const grantsReadOn = (capability: Capability, resourceUri: string) =>
+  arrayOf(capability?.credentialSubject).some((subject: any) =>
+    arrayOf(subject?.['apods:hasAuthorization']).some((authorization: any) =>
+      arrayOf(authorization?.['acl:accessTo']).some((uri: any) => (uri?.id ?? uri) === resourceUri)
+    )
+  );
+
+/**
+ * The current capability's token, if it grants read access to `resourceUri`. The Pod only looks
+ * at one bearer token, so a logged-in visitor who was never invited has to read these resources
+ * with the link's credential rather than with their session.
+ */
+export const capabilityTokenFor = (resourceUri?: string) =>
+  resourceUri && currentCapability && grantsReadOn(currentCapability.capability, resourceUri)
+    ? capabilityToken(currentCapability.capability)
+    : undefined;
+
 /** Fetch a resource through a capability rather than a session — used for the event image, which
  *  a plain `<img src>` could not authenticate. */
 export const fetchWithCapability = (resourceUri: string, capability: Capability, accept = '*/*') =>

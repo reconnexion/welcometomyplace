@@ -1,8 +1,9 @@
 import { authProvider as apAuthProvider, dataProvider as apDataProvider } from '@activitypods/refine-providers';
+import { fetchJson, normalizeRecord } from '@activitypods/refine-providers/utils';
 import urlJoin from '../utils/urlJoin';
 import { BACKEND_URL, CLIENT_ID, SHAPE_REPOSITORY_URL } from '../config/env';
 import appServerDataProvider from './appServerDataProvider';
-import { getCurrentCapabilityToken } from '../utils/capability';
+import { capabilityTokenFor, getCurrentCapabilityToken } from '../utils/capability';
 
 export const authProvider = apAuthProvider({
   clientId: CLIENT_ID,
@@ -36,7 +37,7 @@ const readAuthProvider: typeof authProvider = {
 const JSON_CONTEXT = ['https://www.w3.org/ns/activitystreams', urlJoin(new URL(BACKEND_URL).origin, '.well-known/context.jsonld')];
 
 /** Resources living on the logged-in user's own Pod, discovered via shape trees. */
-export const dataProvider = apDataProvider({
+const podDataProvider = apDataProvider({
   authProvider: readAuthProvider,
   jsonContext: JSON_CONTEXT,
   resources: {
@@ -54,6 +55,18 @@ export const dataProvider = apDataProvider({
     }
   }
 });
+
+/** Whatever a public event link grants is read with that link's credential, even when logged in:
+ *  the visitor's session alone gives no access to an event they were never invited to. */
+export const dataProvider: typeof podDataProvider = {
+  ...podDataProvider,
+  getOne: async params => {
+    const token = capabilityTokenFor(`${params.id}`);
+    if (!token) return podDataProvider.getOne(params);
+    const { json } = await fetchJson(`${params.id}`, {}, token);
+    return { data: normalizeRecord(json, json['@context']) as any };
+  }
+};
 
 /** Resources hosted on the app's own backend (public catalog), not on the user's Pod. */
 export const formatDataProvider = appServerDataProvider({
