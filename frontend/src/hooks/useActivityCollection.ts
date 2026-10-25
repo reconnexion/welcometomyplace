@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { arrayOf, fetchJson } from '@activitypods/refine-providers/utils';
+import { arrayOf } from '@activitypods/refine-providers/utils';
 
-import { authProvider } from '../providers';
+import { authProvider, readResource } from '../providers';
 import { getCurrentCapabilityToken } from '../utils/capability';
 import useOwnActor from './useOwnActor';
 
@@ -34,12 +34,12 @@ const useActivityCollection = (predicateOrUri?: string) => {
   const query = useQuery({
     queryKey,
     queryFn: async () => {
-      let { json } = await fetchJson(collectionUri!, {}, token);
+      let { json } = await readResource(collectionUri!);
 
       if ((json.type === 'OrderedCollection' || json.type === 'Collection') && json.first) {
         const firstItems = json.first?.items || json.first?.orderedItems;
         if (!firstItems) {
-          ({ json } = await fetchJson(typeof json.first === 'string' ? json.first : json.first.id, {}, token));
+          ({ json } = await readResource(typeof json.first === 'string' ? json.first : json.first.id));
         } else {
           json = json.first;
         }

@@ -1,5 +1,5 @@
 import { authProvider as apAuthProvider, dataProvider as apDataProvider } from '@activitypods/refine-providers';
-import { fetchJson, normalizeRecord } from '@activitypods/refine-providers/utils';
+import { fetchJson, fetchWithSession, normalizeRecord } from '@activitypods/refine-providers/utils';
 import urlJoin from '../utils/urlJoin';
 import { BACKEND_URL, CLIENT_ID, SHAPE_REPOSITORY_URL } from '../config/env';
 import appServerDataProvider from './appServerDataProvider';
@@ -66,6 +66,16 @@ export const dataProvider: typeof podDataProvider = {
     const { json } = await fetchJson(`${params.id}`, {}, token);
     return { data: normalizeRecord(json, json['@context']) as any };
   }
+};
+
+/** Read a resource with the visitor's best credential for it: the public link's capability if it
+ *  covers this resource, otherwise their session (through their Pod's proxy for other servers),
+ *  otherwise the link's capability anyway. */
+export const readResource = (uri: string) => {
+  const capabilityToken = capabilityTokenFor(uri);
+  if (capabilityToken) return fetchJson(uri, {}, capabilityToken);
+  const session = authProvider.getSession();
+  return session ? fetchWithSession(uri, {}, session) : fetchJson(uri, {}, getCurrentCapabilityToken());
 };
 
 /** Resources hosted on the app's own backend (public catalog), not on the user's Pod. */
