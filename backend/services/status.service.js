@@ -101,12 +101,14 @@ module.exports = {
         });
       }
 
-      await ctx.call('timer.set', {
-        key: [event.id, 'finished'],
-        time: event.endTime,
-        actionName: 'status.tagAsFinished',
-        params: { event, actorUri }
-      });
+      if (event.endTime) {
+        await ctx.call('timer.set', {
+          key: [event.id, 'finished'],
+          time: event.endTime,
+          actionName: 'status.tagAsFinished',
+          params: { event, actorUri }
+        });
+      }
     },
     async tagUpdatedEvent(ctx) {
       let { event, eventUri, actorUri } = ctx.params;
@@ -125,7 +127,8 @@ module.exports = {
       const isFinished = await this.actions.isFinished({ event }, { parentCtx: ctx });
 
       // Reset timer in case the end time was changed
-      if (!this.isPastDate(event.endTime)) {
+      // Without an end time, the timer would fire immediately and the resulting Update would loop
+      if (event.endTime && !this.isPastDate(event.endTime)) {
         if (isFinished) await this.actions.tagAsComing({ event, actorUri });
         await ctx.call('timer.set', {
           key: [event.id, 'finished'],
