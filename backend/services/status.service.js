@@ -151,10 +151,16 @@ module.exports = {
         });
 
         if (attendeesCollectionUri) {
-          const { body: attendeesCollection } = await ctx.call('pod-resources.get', {
+          const { ok, body: attendeesCollection } = await ctx.call('pod-resources.get', {
             resourceUri: attendeesCollectionUri,
             actorUri
           });
+
+          // Without the attendees, we can't tell whether the event should be closed or reopened
+          if (!ok || !attendeesCollection) {
+            this.logger.warn(`Could not get the attendees of ${event.id}, its status is left unchanged`);
+            return;
+          }
 
           maxAttendeesReached = arrayOf(attendeesCollection.items).length >= event['apods:maxAttendees'];
         }

@@ -1,0 +1,74 @@
+name: wtmp-tests
+
+x-fuseki: &fuseki
+  image: semapps/jena-fuseki-webacl:v1.0.2
+  mem_limit: 1g
+  environment:
+    ADMIN_PASSWORD: admin
+
+x-pod-provider: &pod-provider
+  image: activitypods/backend:${ACTIVITYPODS_VERSION:-latest}
+  # Host network, so that the Pods, the app server (run by Jest) and the other Pod provider all
+  # reach each other through the same http://localhost URLs
+  network_mode: host
+  mem_limit: 1500m
+  depends_on:
+    - fuseki1
+    - fuseki2
+    - redis1
+    - redis2
+    - mailcatcher
+
+services:
+  fuseki1:
+    <<: *fuseki
+    ports:
+      - '3041:3030'
+
+  fuseki2:
+    <<: *fuseki
+    ports:
+      - '3042:3030'
+
+  # One Redis per Pod provider, as the Moleculer transporter uses pub/sub, which ignores databases
+  redis1:
+    image: redis:7-alpine
+    ports:
+      - '6390:6379'
+
+  redis2:
+    image: redis:7-alpine
+    ports:
+      - '6391:6379'
+
+  mailcatcher:
+    image: dockage/mailcatcher:0.7.1
+    ports:
+      - '1081:1080'
+      - '1026:1025'
+
+  pod1:
+    <<: *pod-provider
+    environment:
+      SEMAPPS_HOME_URL: http://localhost:3000/
+      SEMAPPS_PORT: 3000
+      SEMAPPS_FRONTEND_URL: http://localhost:5000/
+      SEMAPPS_SPARQL_ENDPOINT: http://localhost:3041/
+      SEMAPPS_QUEUE_SERVICE_URL: redis://localhost:6390/1
+      SEMAPPS_REDIS_TRANSPORTER_URL: redis://localhost:6390/2
+      SEMAPPS_REDIS_OIDC_PROVIDER_URL: redis://localhost:6390/3
+      SEMAPPS_SMTP_HOST: localhost
+      SEMAPPS_SMTP_PORT: 1026
+
+  pod2:
+    <<: *pod-provider
+    environment:
+      SEMAPPS_HOME_URL: http://localhost:3100/
+      SEMAPPS_PORT: 3100
+      SEMAPPS_FRONTEND_URL: http://localhost:5100/
+      SEMAPPS_SPARQL_ENDPOINT: http://localhost:3042/
+      SEMAPPS_QUEUE_SERVICE_URL: redis://localhost:6391/1
+      SEMAPPS_REDIS_TRANSPORTER_URL: redis://localhost:6391/2
+      SEMAPPS_REDIS_OIDC_PROVIDER_URL: redis://localhost:6391/3
+      SEMAPPS_SMTP_HOST: localhost
+      SEMAPPS_SMTP_PORT: 1026

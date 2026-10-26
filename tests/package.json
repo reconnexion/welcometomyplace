@@ -1,0 +1,9 @@
+{
+  "name": "welcometomyplace-tests",
+  "private": true,
+  "scripts": {
+    "start-servers": "docker compose up -d",
+    "stop-servers": "docker compose down",
+    "test": "NODE_PATH=../backend/node_modules node --require ./env.js --test --test-concurrency=1 --test-force-exit --test-timeout=900000"
+  }
+}
