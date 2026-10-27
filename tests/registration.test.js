@@ -1,12 +1,12 @@
 const { describe, test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
-const { delay } = require('@semapps/ldp');
 const {
   waitFor,
   fetchAs,
   readAs,
   getCollectionItems,
   waitForNotification,
+  waitForProcessing,
   assertNoNotification,
   getNotifications
 } = require('./initialize');
@@ -53,9 +53,8 @@ for (const mode of MODES) {
 
     const join = (actor, extra = {}) => postActivity(actor, { type: 'Join', object: eventUri, to: alice.id, ...extra });
 
-    /** An ignored activity leaves no trace, so give it the time it would have taken to be handled */
-    const assertNotAttending = async actor => {
-      await delay(8000);
+    const assertNotAttending = async (activity, actor) => {
+      await waitForProcessing(activity, alice);
       assert.ok(!(await getAttendees()).includes(actor.id));
     };
 
@@ -84,13 +83,13 @@ for (const mode of MODES) {
     });
 
     test('A Like from someone who was not invited is ignored', async () => {
-      await postActivity(daisy, { type: 'Like', object: eventUri, to: alice.id });
-      await assertNoNotification(alice, /Daisy is interested/);
+      const like = await postActivity(daisy, { type: 'Like', object: eventUri, to: alice.id });
+      await assertNoNotification(like, alice, /Daisy is interested/);
     });
 
     test('A Join from someone who was not invited is ignored', async () => {
-      await join(daisy);
-      await assertNotAttending(daisy);
+      const activity = await join(daisy);
+      await assertNotAttending(activity, daisy);
     });
 
     test('A guest can join the event', async () => {
@@ -117,8 +116,8 @@ for (const mode of MODES) {
     });
 
     test('A Join pointing to a credential that is not the link of this event is ignored', async () => {
-      await join(daisy, { instrument: `${alice.id}/data/not-a-credential` });
-      await assertNotAttending(daisy);
+      const activity = await join(daisy, { instrument: `${alice.id}/data/not-a-credential` });
+      await assertNotAttending(activity, daisy);
     });
 
     test('Someone who was not invited can join with the public link', async () => {
@@ -141,8 +140,8 @@ for (const mode of MODES) {
     test('The event is closed once the maximum number of attendees is reached', async () => {
       await waitForStatus(alice, eventUri, [STATUS.closed]);
 
-      await join(daisy, { instrument: link.id });
-      await assertNotAttending(daisy);
+      const activity = await join(daisy, { instrument: link.id });
+      await assertNotAttending(activity, daisy);
     });
 
     test('An attendee can leave, which reopens the event', async () => {
@@ -160,8 +159,8 @@ for (const mode of MODES) {
 
       assert.notEqual((await fetchWithCapability(eventUri, link)).status, 200);
 
-      await join(daisy, { instrument: link.id });
-      await assertNotAttending(daisy);
+      const activity = await join(daisy, { instrument: link.id });
+      await assertNotAttending(activity, daisy);
     });
   });
 }

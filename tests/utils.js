@@ -9,6 +9,7 @@ const {
   initializeAppServer,
   createActor,
   installApp,
+  waitForListeners,
   fetchAs
 } = require('./initialize');
 
@@ -46,8 +47,9 @@ const setUp = async (mode, users) => {
     log(`Creating ${username}...`);
     actors[username] = await createActor(podProvider, { username, name });
     log(`Installing the app for ${username}...`);
-    await installApp(actors[username], appServer);
+    await installApp(actors[username]);
   }
+  await waitForListeners(appServer, Object.values(actors));
 
   const tearDown = async () => {
     await appServer.stop();

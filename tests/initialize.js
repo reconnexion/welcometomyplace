@@ -67,7 +67,7 @@ const clearAllData = async () => {
           : 'CLEAR ALL' // DROP ALL doesn't work with WebACL datasets
       );
     }
-    await flushRedisDb(`${redisUrl}/${REDIS_DBS.queue}`);
+    // Not the queue: Bull workers stop for good if a job in progress disappears
     await flushRedisDb(`${redisUrl}/${REDIS_DBS.oidc}`);
   }
   await flushRedisDb(process.env.SEMAPPS_QUEUE_SERVICE_URL);
@@ -91,9 +91,31 @@ const connectPodProvider = async index => {
  * Start the app server with the services of the backend, as in production. Only the settings
  * which would store data outside of the triplestore or Redis are changed.
  */
+const processedActivities = new Set();
+
+/** Remembers the activities the app has finished handling, whatever the outcome */
+const ProcessedActivitiesMiddleware = {
+  name: 'ProcessedActivities',
+  localAction: (next, action) =>
+    action.name === 'pod-activities-watcher.processWebhook'
+      ? async ctx => {
+          try {
+            return await next(ctx);
+          } finally {
+            processedActivities.add(`${ctx.params.object} ${ctx.params.target}`);
+          }
+        }
+      : next
+};
+
 const initializeAppServer = async () => {
   const config = require(path.join(BACKEND_DIR, 'moleculer.config.js'));
-  const broker = new ServiceBroker({ ...config, nodeID: 'wtmp-app', logger });
+  const broker = new ServiceBroker({
+    ...config,
+    nodeID: 'wtmp-app',
+    logger,
+    middlewares: [...(config.middlewares || []), ProcessedActivitiesMiddleware]
+  });
 
   const servicesDir = path.join(BACKEND_DIR, 'services');
   const files = fs
@@ -144,7 +166,7 @@ const createActor = async (podProvider, { username, name }) => {
   return actor;
 };
 
-const installApp = async (actor, appServer) => {
+const installApp = async actor => {
   const app = await actor.call('ldp.remote.get', { resourceUri: APP_URI });
   let requiredGroup;
   for (const groupUri of arrayOf(app['interop:hasAccessNeedGroup'])) {
@@ -156,15 +178,18 @@ const installApp = async (actor, appServer) => {
     acceptedAccessNeeds: requiredGroup['interop:hasAccessNeed'],
     acceptedSpecialRights: requiredGroup['apods:hasSpecialRights']
   });
+};
 
-  // Until then, what the actor does on their Pod goes unnoticed by the app
-  await waitFor(async () => {
+/** Until then, what the actors do on their Pod goes unnoticed by the app */
+const waitForListeners = (appServer, actors) =>
+  waitFor(async () => {
     const listeners = await appServer.call('solid-notifications.listener.getCache');
-    for (const collectionUri of [actor.inbox, actor.outbox]) {
-      assert.ok(listeners.some(listener => listener.resourceUri === collectionUri && listener.channelUri));
+    for (const actor of actors) {
+      for (const collectionUri of [actor.inbox, actor.outbox]) {
+        assert.ok(listeners.some(listener => listener.resourceUri === collectionUri && listener.channelUri));
+      }
     }
   });
-};
 
 /** What the frontend does: an authenticated request to the Pod, with the user's token */
 const fetchAs = async (actor, url, { method = 'GET', body, headers = {} } = {}) => {
@@ -247,10 +272,16 @@ const waitForNotification = (actor, titlePattern) =>
     }
   });
 
-/** An ignored activity leaves no trace, so give it the time it would have taken to be handled */
-const assertNoNotification = async (actor, titlePattern) => {
-  await delay(8000);
-  const titles = (await getNotifications(actor)).map(notification => notification.name);
+/** Wait until the app has handled the activity received in the inbox of the recipient */
+const waitForProcessing = (activity, recipient) =>
+  waitFor(() => assert.ok(processedActivities.has(`${activity.id} ${recipient.inbox}`), `${activity.id} not processed`));
+
+/** An ignored activity leaves no trace, so wait for the app to be done with it */
+const assertNoNotification = async (activity, recipient, titlePattern) => {
+  await waitForProcessing(activity, recipient);
+  // The notification would have been posted by then, but not necessarily delivered
+  await delay(2000);
+  const titles = (await getNotifications(recipient)).map(notification => notification.name);
   assert.ok(!titles.some(title => titlePattern.test(title)), `Unexpected notification matching ${titlePattern}`);
 };
 
@@ -264,11 +295,13 @@ module.exports = {
   initializeAppServer,
   createActor,
   installApp,
+  waitForListeners,
   fetchAs,
   readAs,
   getCollectionItems,
   getInbox,
   getNotifications,
   waitForNotification,
+  waitForProcessing,
   assertNoNotification
 };

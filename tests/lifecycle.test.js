@@ -47,17 +47,19 @@ for (const mode of MODES) {
       before(async () => {
         eventUri = await createEvent(appServer, alice, {
           name: 'Picnic',
-          startTime: inSeconds(25),
-          endTime: inSeconds(45),
-          'apods:closingTime': inSeconds(25),
+          startTime: inSeconds(3600),
+          endTime: inSeconds(7200),
+          'apods:closingTime': inSeconds(3600),
           location: locationUri
         });
         await waitForStatus(alice, eventUri, [STATUS.open, STATUS.coming]);
       });
 
       test('Timers are set to close and finish it', async () => {
-        assert.equal((await getTimer(eventUri, 'closed')).actionName, 'status.tagAsClosed');
-        assert.equal((await getTimer(eventUri, 'finished')).actionName, 'status.tagAsFinished');
+        await waitFor(async () => {
+          assert.equal((await getTimer(eventUri, 'closed'))?.actionName, 'status.tagAsClosed');
+          assert.equal((await getTimer(eventUri, 'finished'))?.actionName, 'status.tagAsFinished');
+        });
       });
 
       test('A guest joins before the closing time', async () => {
@@ -70,18 +72,31 @@ for (const mode of MODES) {
         });
       });
 
+      test('Bringing it forward moves its timers', async () => {
+        // It has started, it will close in a few seconds and end once the next tests are done
+        const endTime = inSeconds(30);
+        await updateEvent(alice, eventUri, {
+          startTime: inSeconds(-60),
+          'apods:closingTime': inSeconds(5),
+          endTime
+        });
+        await waitFor(async () => {
+          assert.equal((await getTimer(eventUri, 'finished'))?.time, endTime);
+        });
+      });
+
       test('It is closed at the closing time', async () => {
         await waitForStatus(alice, eventUri, [STATUS.closed, STATUS.coming]);
       });
 
       test('Nobody can join once it is closed', async () => {
-        await postActivity(craig, { type: 'Join', object: eventUri, to: alice.id });
-        await assertNoNotification(alice, /Craig is attending/);
+        const join = await postActivity(craig, { type: 'Join', object: eventUri, to: alice.id });
+        await assertNoNotification(join, alice, /Craig is attending/);
       });
 
       test('Guests cannot say they are interested once it has started', async () => {
-        await postActivity(craig, { type: 'Like', object: eventUri, to: alice.id });
-        await assertNoNotification(alice, /Craig is interested/);
+        const like = await postActivity(craig, { type: 'Like', object: eventUri, to: alice.id });
+        await assertNoNotification(like, alice, /Craig is interested/);
       });
 
       test('It is finished at the end time', async () => {
@@ -142,8 +157,15 @@ for (const mode of MODES) {
           endTime: inSeconds(7200),
           location: locationUri
         });
+      });
+
+      test('A new event is open, coming, and its organizer attends it', async () => {
         await waitForStatus(alice, eventUri, [STATUS.open, STATUS.coming]);
-        await waitFor(async () => assert.ok((await getEvent(alice, eventUri))['apods:attendees']));
+        await waitFor(async () => {
+          const event = await getEvent(alice, eventUri);
+          assert.ok(event['apods:attendees']);
+          assert.deepEqual(await getCollectionItems(alice, event['apods:attendees']), [alice.id]);
+        });
       });
 
       test('A closing time in the past closes it', async () => {
@@ -178,11 +200,14 @@ for (const mode of MODES) {
       test('Rescheduling keeps the existing timers and restores the missing ones', async () => {
         await appServer.call('timer.delete', { key: [eventUri, 'finished'] });
 
+        // The status updates of the previous tests may still set it again in the meantime
         const stats = await appServer.call('status.rescheduleAll', { actorUri: alice.id });
-        assert.equal(stats.timersSet, 1);
-        assert.ok(stats.timersKept >= 1);
         assert.equal(stats.eventsFailed, 0);
         assert.equal((await getTimer(eventUri, 'finished')).actionName, 'status.tagAsFinished');
+
+        const { timersSet, timersKept } = await appServer.call('status.rescheduleAll', { actorUri: alice.id });
+        assert.equal(timersSet, 0);
+        assert.equal(timersKept, stats.timersSet + stats.timersKept);
       });
 
       test('Recent events are not removed by the cleanup', async () => {

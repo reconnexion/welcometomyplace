@@ -2,9 +2,11 @@ name: wtmp-tests
 
 x-fuseki: &fuseki
   image: semapps/jena-fuseki-webacl:v1.0.2
-  mem_limit: 1g
+  mem_limit: 1500m
   environment:
     ADMIN_PASSWORD: admin
+    # Leave room for what TDB uses outside of the heap
+    JVM_ARGS: -Xmx700m -XX:+ExitOnOutOfMemoryError
 
 x-pod-provider: &pod-provider
   image: activitypods/backend:${ACTIVITYPODS_VERSION:-latest}
