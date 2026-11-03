@@ -9,7 +9,7 @@ import { DEFAULT_POD_PROVIDER } from '../config/env';
 /**
  * Account creation. There is no signup UI of our own to show: the Pod provider owns that screen,
  * so this route only starts the Solid-OIDC flow with `is_signup` set (`authProvider.register`)
- * and hands over. Once the account exists and the app has been registered, `AntdAuthPage`
+ * and hands over. Once the account exists and the app has been registered, `LoginPage`
  * finishes the flow and returns the user to `?redirect` — which, coming from a public event
  * link, is the event page carrying `?join=true`.
  *

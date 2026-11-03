@@ -7,7 +7,7 @@ import { capabilityTokenFor, getCurrentCapabilityToken } from '../utils/capabili
 
 export const authProvider = apAuthProvider({
   clientId: CLIENT_ID,
-  // `AntdBackgroundChecks` (see `components/layout/PageLayout.tsx`) already polls the app status
+  // `BackgroundChecks` (see `components/layout/PageLayout.tsx`) already polls the app status
   // and covers the re-consent case, no need for the auth provider's own poll on top of it.
   appStatusCheckInterval: false
 });
@@ -34,7 +34,7 @@ const readAuthProvider: typeof authProvider = {
  *  reference properties like `apods:hasFormat` correctly typed `@type: "@id"`), matching the old
  *  app's `dataProvider.js`. Without it, `apods:`-prefixed reference fields still get submitted,
  *  but as plain string literals rather than resource links — silently unusable server-side. */
-const JSON_CONTEXT = ['https://www.w3.org/ns/activitystreams', urlJoin(new URL(BACKEND_URL).origin, '.well-known/context.jsonld')];
+export const JSON_CONTEXT = ['https://www.w3.org/ns/activitystreams', urlJoin(new URL(BACKEND_URL).origin, '.well-known/context.jsonld')];
 
 /** Resources living on the logged-in user's own Pod, discovered via shape trees. */
 const podDataProvider = apDataProvider({

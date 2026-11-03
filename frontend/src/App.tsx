@@ -1,7 +1,7 @@
 import { Authenticated, Refine } from '@refinedev/core';
 import { useNotificationProvider, ErrorComponent } from '@refinedev/antd';
 import routerProvider, { CatchAllNavigate, UnsavedChangesNotifier } from '@refinedev/react-router';
-import { AntdAuthPage } from '@activitypods/refine-providers/antd-auth-page';
+import { LoginPage } from '@activitypods/refine-antd';
 import { BrowserRouter, Routes, Route, Outlet, Navigate, useParams } from 'react-router';
 import { App as AntdApp, ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
@@ -64,14 +64,14 @@ const App = () => (
             <Route path="/" element={<HomePage />} />
 
             {/*
-              Not wrapped in <Authenticated>: AntdAuthPage handles every stage (provider picker,
+              Not wrapped in <Authenticated>: LoginPage handles every stage (provider picker,
               OAuth callback, app registration) from the URL's search params, so this single
               route doubles as the OIDC redirectUri (defaults to `${origin}/login`, matching what
               the backend registers this app's OIDC client with — see app.service.js).
             */}
             <Route
               path="/login"
-              element={<AntdAuthPage authProvider={authProvider} defaultPodProvider={DEFAULT_POD_PROVIDER} redirect="/events" />}
+              element={<LoginPage defaultPodProvider={DEFAULT_POD_PROVIDER} redirect="/events" />}
             />
 
             {/* Kicks off the Solid-OIDC flow in signup mode, then hands back to /login's callback */}
@@ -82,7 +82,7 @@ const App = () => (
             <Route path="/Event/:id" element={<LegacyEventRedirect />} />
 
             {/* The layout is mounted once for all these pages, so that the app bar and the app status
-                checks of AntdBackgroundChecks aren't run again on every navigation. */}
+                checks of BackgroundChecks aren't run again on every navigation. */}
             <Route
               element={
                 <PageLayout>

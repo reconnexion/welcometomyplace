@@ -23,7 +23,7 @@ dayjs.locale(APP_LANG);
 /**
  * Language is fixed per deployment (via VITE_APP_LANG, see `config/env.ts`) — there is no
  * in-app language switcher, matching the current app's behavior. `changeLocale` is still wired
- * up (it's part of Refine's `I18nProvider` contract, e.g. `AntdAuthPage` could theoretically
+ * up (it's part of Refine's `I18nProvider` contract, e.g. `LoginPage` could theoretically
  * call it) but nothing in this app calls it today.
  */
 export const i18nProvider: I18nProvider = {
