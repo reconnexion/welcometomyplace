@@ -7,6 +7,20 @@ module.exports = {
   name: 'registration',
   mixins: [PodActivitiesHandlerMixin],
   methods: {
+    // Ensure the organizer is in the contacts WebACL group of the attendee so he can see his profile (and write to him)
+    async addOrganizerToContacts(ctx, organizerUri, attendeeUri) {
+      const { body: attendee } = await ctx.call('pod-resources.get', { resourceUri: attendeeUri, actorUri: attendeeUri });
+
+      const contactsGroupUri = await ctx.call('pod-wac-groups.getUriFromCollectionUri', {
+        collectionUri: attendee['apods:contacts']
+      });
+
+      await ctx.call('pod-wac-groups.addMember', {
+        groupUri: contactsGroupUri,
+        memberUri: organizerUri,
+        actorUri: attendeeUri
+      });
+    },
     /**
      * Decide whether a `Join` from someone who was never invited may be accepted anyway, on the
      * strength of the credential behind a public event link (see the share dialog's "general
@@ -55,18 +69,7 @@ module.exports = {
         const event = activity.object;
         const organizerUri = event['dc:creator'];
 
-        const { body: actor } = await ctx.call('pod-resources.get', { resourceUri: actorUri, actorUri });
-
-        const contactsGroupUri = await ctx.call('pod-wac-groups.getUriFromCollectionUri', {
-          collectionUri: actor['apods:contacts'],
-        });
-
-        // Ensure the organizer is in the contacts WebACL group of the emitter so he can see his profile (and write to him)
-        await ctx.call('pod-wac-groups.addMember', {
-          groupUri: contactsGroupUri,
-          memberUri: organizerUri,
-          actorUri
-        });
+        await this.addOrganizerToContacts(ctx, organizerUri, actorUri);
       },
       async onReceive(ctx, activity, actorUri) {
         const event = activity.object;
@@ -122,6 +125,13 @@ module.exports = {
             },
             actorUri: organizerUri
           });
+
+          // The attendee couldn't read the event when the Join left his outbox, so onEmit didn't match
+          try {
+            await this.addOrganizerToContacts(ctx, organizerUri, activity.actor);
+          } catch (e) {
+            this.logger.warn(`Could not add ${organizerUri} to the contacts of ${activity.actor}: ${e.message}`);
+          }
         }
 
         await ctx.call('attendees.add', {

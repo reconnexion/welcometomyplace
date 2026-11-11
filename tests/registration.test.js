@@ -135,6 +135,9 @@ for (const mode of MODES) {
       // ...but without telling them they were invited
       const notifications = await getNotifications(craig);
       assert.ok(!notifications.some(n => /invites you/.test(n.name)));
+
+      await waitForNotification(alice, /Craig is attending your event "Birthday party"/);
+      assert.equal((await readAs(alice, craig.url)).status, 200);
     });
 
     test('The event is closed once the maximum number of attendees is reached', async () => {
