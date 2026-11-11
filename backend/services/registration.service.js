@@ -6,10 +6,70 @@ const { arrayOf } = require('@semapps/ldp');
 module.exports = {
   name: 'registration',
   mixins: [PodActivitiesHandlerMixin],
+  actions: {
+    // Attendees who joined through a public link before 28833a1 never added the organizer to their contacts
+    async repairOrganizerContacts(ctx) {
+      const { actorUri: onlyActorUri, dryRun = false } = ctx.params;
+      const stats = { pods: 0, events: 0, attendees: 0, repaired: 0, failed: 0 };
+
+      const organizersUris = onlyActorUri
+        ? [onlyActorUri]
+        : arrayOf(await ctx.call('app-registrations.getRegisteredPods'));
+
+      for (const organizerUri of organizersUris) {
+        let events;
+        try {
+          const { body: eventsContainer } = await ctx.call('events.list', { actorUri: organizerUri });
+          events = arrayOf(eventsContainer?.['ldp:contains']).filter(
+            event => event['dc:creator'] === organizerUri && event['apods:attendees']
+          );
+          stats.pods++;
+        } catch (e) {
+          this.logger.warn(`Could not list the events of ${organizerUri}: ${e.message}`);
+          continue;
+        }
+
+        for (const event of events) {
+          stats.events++;
+          const attendees = await ctx.call('pod-collections.getItems', {
+            collectionUri: event['apods:attendees'],
+            actorUri: organizerUri
+          });
+
+          for (const attendeeUri of attendees.filter(uri => uri !== organizerUri)) {
+            stats.attendees++;
+            try {
+              const { body: attendee } = await ctx.call('pod-resources.get', {
+                resourceUri: attendeeUri,
+                actorUri: organizerUri
+              });
+              const { ok } = await ctx.call('pod-resources.get', { resourceUri: attendee.url, actorUri: organizerUri });
+              if (ok) continue;
+
+              this.logger.info(
+                `${organizerUri} cannot see the profile of ${attendeeUri} (event ${event.id || event['@id']})`
+              );
+              if (!dryRun) await this.addOrganizerToContacts(ctx, organizerUri, attendeeUri);
+              stats.repaired++;
+            } catch (e) {
+              stats.failed++;
+              this.logger.warn(`Could not repair the contacts of ${attendeeUri} for ${organizerUri}: ${e.message}`);
+            }
+          }
+        }
+      }
+
+      this.logger.info(`Organizer contacts repaired${dryRun ? ' (dry run)' : ''}: ${JSON.stringify(stats)}`);
+      return stats;
+    }
+  },
   methods: {
     // Ensure the organizer is in the contacts WebACL group of the attendee so he can see his profile (and write to him)
     async addOrganizerToContacts(ctx, organizerUri, attendeeUri) {
-      const { body: attendee } = await ctx.call('pod-resources.get', { resourceUri: attendeeUri, actorUri: attendeeUri });
+      const { body: attendee } = await ctx.call('pod-resources.get', {
+        resourceUri: attendeeUri,
+        actorUri: attendeeUri
+      });
 
       const contactsGroupUri = await ctx.call('pod-wac-groups.getUriFromCollectionUri', {
         collectionUri: attendee['apods:contacts']
