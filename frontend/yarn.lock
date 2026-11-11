@@ -2,10 +2,24 @@
 # yarn lockfile v1
 
 
-"@activitypods/refine-providers@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@activitypods/refine-providers/-/refine-providers-0.2.1.tgz#62ebce830b3a6182edb3db6041df8b4c973897f0"
-  integrity sha512-9rnDapyIujrgkNZuT4+kDzE035qfdVz2bG84RVNFRcc0lLac3MiAUF7VCDQGzPYuL5EsLMdSEvYB/SeG5fsamA==
+"@activitypods/refine-antd@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@activitypods/refine-antd/-/refine-antd-2.3.2.tgz#6aaabc9826bdd4952e3faa2d4ffb4e87a619b561"
+  integrity sha512-vWPIjWtSuRoNw2Zxe3e9P5Zdm+46Of+hiBncsDBzQHNKOxmyQEpNHRtu3kJigLaJQ9DllSOffSFA9e+EyFl5/w==
+  dependencies:
+    "@activitypods/refine-hooks" "2.3.2"
+
+"@activitypods/refine-hooks@2.3.2", "@activitypods/refine-hooks@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@activitypods/refine-hooks/-/refine-hooks-2.3.2.tgz#d3478ddbf083a32fc97c48c98041eed5659c6c80"
+  integrity sha512-uZiuUbu+f9jRlHifPvsEA7Y+9jweQQmI1hI4fhPEUcwW7AV2HluHQoW5ueCQry7dGdG3IblM5is9Vu88gc3lgg==
+  dependencies:
+    "@activitypods/refine-providers" "2.3.2"
+
+"@activitypods/refine-providers@2.3.2", "@activitypods/refine-providers@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@activitypods/refine-providers/-/refine-providers-2.3.2.tgz#f100f1379405563fdd0a200933611e3520eac893"
+  integrity sha512-yJ70gQO9aKYEoc3FeqDbAI5OP1zJSot3qWSXz86G1EtDwQpXOp40a34ddQ58uSUiSjLGzJZB4kGSJ/3HXPtqnA==
   dependencies:
     http-link-header "^1.1.3"
     jsonld "^8.0.0"
